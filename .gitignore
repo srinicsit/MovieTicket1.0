@@ -34,3 +34,19 @@ Icon
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes
+
+*.classpath
+*.project
+*.component
+*.jar
+*.war
+*.class
+MovieTicket/MovieTicket-bs/.settings/*
+MovieTicket/MovieTicket-bs/target/*
+
+MovieTicket/MovieTicket-web/.settings/*
+MovieTicket/MovieTicket-web/target/*
+
+MovieTicket/MovieTicket-core/.settings/*
+MovieTicket/MovieTicket-core/target/*
+
