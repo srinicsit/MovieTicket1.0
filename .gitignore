@@ -38,9 +38,6 @@ Icon
 *.classpath
 *.project
 *.component
-*.jar
-*.war
-*.class
 
 MovieTicket/*/.settings/*
 MovieTicket/*/target/*
