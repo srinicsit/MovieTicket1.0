@@ -1,5 +1,8 @@
 package com.avihs.movie.business.booking_ticket.dao;
 
-public interface BookingTicketDao {
+import com.avihs.movie.business.booking_ticket.model.BookingTicket;
+import com.avihs.movie.business.dao.CommonDao;
+
+public interface BookingTicketDao<BookingTicket> extends CommonDao<BookingTicket> {
 
 }

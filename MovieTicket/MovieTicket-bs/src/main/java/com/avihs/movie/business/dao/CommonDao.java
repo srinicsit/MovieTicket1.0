@@ -1,12 +1,12 @@
 package com.avihs.movie.business.dao;
 
-import javax.annotation.Resource;
+public interface CommonDao<T> {
 
-import org.hibernate.SessionFactory;
+	public T get(Class cls, Integer id);
 
-public class CommonDao {
+	public void save(T t);
 
-	@Resource(name = "sessionFactory")
-	protected SessionFactory sessionFactory;
+	public void update(T t);
 
+	public void delete(T t);
 }

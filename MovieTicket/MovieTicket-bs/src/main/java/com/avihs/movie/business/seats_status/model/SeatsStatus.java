@@ -1,8 +1,11 @@
 package com.avihs.movie.business.seats_status.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.avihs.movie.business.model.BaseModel;
@@ -22,15 +25,11 @@ public class SeatsStatus extends BaseModel {
 	private SeatStatus seatStatus;
 
 	@JoinColumn(name = "SEATS_LAYOUT_ID")
+	@ManyToOne
 	private SeatsLayout seatsLayout;
 
-	public SeatStatus getSeatStatus() {
-		return seatStatus;
-	}
-
-	public void setSeatStatus(SeatStatus seatStatus) {
-		this.seatStatus = seatStatus;
-	}
+	@Column(name = "DATE")
+	private Date date;
 
 	public SeatsLayout getSeatsLayout() {
 		return seatsLayout;
@@ -38,6 +37,14 @@ public class SeatsStatus extends BaseModel {
 
 	public void setSeatsLayout(SeatsLayout seatsLayout) {
 		this.seatsLayout = seatsLayout;
+	}
+
+	public SeatStatus getSeatStatus() {
+		return seatStatus;
+	}
+
+	public void setSeatStatus(SeatStatus seatStatus) {
+		this.seatStatus = seatStatus;
 	}
 
 }
