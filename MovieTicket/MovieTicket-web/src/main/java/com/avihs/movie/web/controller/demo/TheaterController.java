@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.avihs.movie.business.theatermgmt.service.TheaterMgmtService;
+import com.avihs.movie.business.theater.service.TheaterMgmtService;
 
 @Controller
 @RequestMapping("/greeting")

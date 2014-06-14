@@ -16,7 +16,7 @@ public class BaseModel {
 
 	@Column(name = "STATUS")
 	private char status;
-
+	
 	public BaseModel() {
 
 	}
