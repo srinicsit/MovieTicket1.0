@@ -10,6 +10,11 @@ import com.avihs.movie.business.model.BaseModel;
 @Table(name = "THEATER")
 public class Theater extends BaseModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "NAME")
 	private String name;
 	
