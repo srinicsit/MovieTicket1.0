@@ -2,5 +2,5 @@ package com.avihs.movie.business.model;
 
 public enum SeatStatus {
 
-	CONFIRMED, AVAILABLE, NOT_AVAILABLE
+	AVAILABLE, NOT_AVAILABLE, BLOCKED
 }
