@@ -31,11 +31,11 @@ public class BookingTicket extends BaseModel {
 	@JoinColumn(name = "USER_PK_ID")
 	@ManyToOne
 	private User user;
-	
-	@JoinColumn(name = "USER_PK_ID")
+
+	@JoinColumn(name = "MOVIE_SCREEN_ID")
 	@ManyToOne
 	private MovieScreen movieScreen;
-	
+
 	@Column(name = "BOOKING_STATUS")
 	private BookingStatus bookingStatus;
 
