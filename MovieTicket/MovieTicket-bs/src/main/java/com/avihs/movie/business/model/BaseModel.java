@@ -14,6 +14,9 @@ public class BaseModel {
 	@GeneratedValue
 	private Integer id;
 
+	@Column(name = "STATUS")
+	private char status;
+
 	public BaseModel() {
 
 	}

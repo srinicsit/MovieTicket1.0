@@ -5,18 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.avihs.movie.web.controller.service.TestService;
+import com.avihs.movie.business.theatermgmt.service.TheaterMgmtService;
 
 @Controller
 @RequestMapping("/greeting")
 public class TheaterController {
 
-	@Autowired
-	private TestService testService;
 
-
-	// @Autowired
-	// private TheaterMgmtService theaterMgmtService;
+	 @Autowired
+	 private TheaterMgmtService theaterMgmtService;
 
 	public TheaterController() {
 		System.out.println("TheaterController");

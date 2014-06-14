@@ -14,15 +14,13 @@
 	<mvc:annotation-driven />
 	<context:annotation-config />
 
-	<context:component-scan base-package="com.avihs.movie" />
+	<context:component-scan base-package="com.avihs.movie.web" />
 
 
 	<!-- Scan for Spring beans declared via annotations. -->
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
-
-	<bean id="eventListenerBean" class="com.avihs.movie.web.servlet.ApplicationListenerBean" />
 
 	<!-- Imports user-defined @Controller beans that process client requests -->
 	<import resource="controllers.xml" />

@@ -19,7 +19,7 @@
 		http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
 
 	<tx:annotation-driven />
-
+	<context:annotation-config />
 	<!-- Scan for Spring beans declared via annotations. -->
 	<context:component-scan base-package="com.avihs.movie.business" />
 
@@ -32,7 +32,7 @@
 		<property name="hibernateProperties" ref="hibernateProperties" />
 		<property name="packagesToScan">
 			<list>
-				<value>com.bbvacompass.netcash.helpdesk.business.**.domain</value>
+				<value>com.avihs.movie.business</value>
 			</list>
 		</property>
 	</bean>

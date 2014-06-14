@@ -2,14 +2,25 @@ package com.avihs.movie.business.theatermgmt.dao;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.avihs.movie.business.theatermgmt.model.Theater;
 
 @Repository
-public class TheaterMgmtDaoImpl implements TheaterMgmtDao {
+public class TheaterMgmtDaoImpl  implements
+		TheaterMgmtDao {
+
+    @Resource(name="sessionFactory")
+    protected SessionFactory sessionFactory;
+//
+//    public void setSessionFactory(SessionFactory sessionFactory) {
+//           this.sessionFactory = sessionFactory;
+//    }
+//   
+
 
 	public TheaterMgmtDaoImpl() {
 		System.out.println("TheaterMgmtDaoImpl");
