@@ -62,26 +62,26 @@
 	</bean>
 
 	<!-- Poincut to apply transactionality to all repository operations -->
-	<!-- <aop:config> -->
-	<!-- <aop:pointcut id="repositoryOperation" expression="bean(*Repository*) 
-		|| bean(*Dao*)" /> -->
-	<!-- <aop:advisor pointcut-ref="repositoryOperation" -->
-	<!-- advice-ref="txAdvice" /> -->
-	<!-- </aop:config> -->
+	<aop:config>
+	<aop:pointcut id="repositoryOperation" expression="bean(*Repository*) 
+		|| bean(*Dao*)" />
+	<aop:advisor pointcut-ref="repositoryOperation"
+	advice-ref="txAdvice" />
+	</aop:config>
 
 	<!-- Advice to define transactionality for each kind of repository operation -->
-	<!-- <tx:advice id="txAdvice"> -->
-	<!-- <tx:attributes> -->
-	<!-- <tx:method name="get*" propagation="REQUIRED" read-only="true" /> -->
-	<!-- <tx:method name="filter*" propagation="REQUIRED" read-only="true" /> -->
-	<!-- <tx:method name="find*" propagation="REQUIRED" read-only="true" /> -->
-	<!-- <tx:method name="load*" propagation="SUPPORTS" read-only="true" /> -->
+	<tx:advice id="txAdvice">
+	<tx:attributes>
+	<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+	<tx:method name="is*" propagation="SUPPORTS" read-only="true" />
+	<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+	<tx:method name="load*" propagation="SUPPORTS" read-only="true" />
 	<!-- <tx:method name="save*" propagation="REQUIRED" /> -->
 	<!-- <tx:method name="update*" propagation="REQUIRED" /> -->
 	<!-- <tx:method name="delete*" propagation="REQUIRED" /> -->
 	<!-- <tx:method name="insert*" propagation="REQUIRED" /> -->
-	<!-- </tx:attributes> -->
-	<!-- </tx:advice> -->
+	</tx:attributes>
+	</tx:advice>
 
 	<!-- class path external locations -->
 

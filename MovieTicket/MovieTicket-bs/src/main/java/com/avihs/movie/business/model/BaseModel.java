@@ -10,7 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class BaseModel implements Serializable{
+public class BaseModel implements Serializable {
 	/**
 	 * 
 	 */
@@ -21,10 +21,26 @@ public class BaseModel implements Serializable{
 	@GeneratedValue
 	private Integer id;
 
-	@Column(name = "STATUS")
-	private char status;
-	
+	@Column(name = "IS_ACTIVE", length = 1)
+	private Character isActive = 'Y';
+
 	public BaseModel() {
 
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Character getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Character isActive) {
+		this.isActive = isActive;
 	}
 }

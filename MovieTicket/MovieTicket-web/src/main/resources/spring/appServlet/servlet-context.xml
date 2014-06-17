@@ -12,7 +12,7 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 
 	<mvc:annotation-driven />
-	<context:annotation-config />
+
 
 	<context:component-scan base-package="com.avihs.movie.web" />
 
@@ -23,10 +23,10 @@
 		infrastructure -->
 
 	<!-- Imports user-defined @Controller beans that process client requests -->
-	<import resource="controllers.xml" />
+		<import resource="controllers.xml" /> 
 
 	<!-- Enable serving of classpath with Spring 3 resource serving mechanism. -->
-	<mvc:resources mapping="/static/**" location="/static/" />
+	<mvc:resources mapping="/resources/**" location="/resources/" />
 
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
