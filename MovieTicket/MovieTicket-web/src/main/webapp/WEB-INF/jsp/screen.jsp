@@ -11,7 +11,7 @@
 		<p class="validateTips">All form fields are required.</p>
 
 		<form:form
-			action="${pageContext.servletContext.contextPath}${'/theater'}"
+			action="${pageContext.servletContext.contextPath}${'/screen'}"
 			modelAttribute="theaterForm" method="post">
 			<fieldset>
 
