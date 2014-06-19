@@ -58,6 +58,11 @@ body {
 .fakewindowcontain .ui-widget-overlay {
 	position: absolute;
 }
+
+.validateTips {
+	border: 1px solid transparent;
+	padding: 0.3em;
+}
 </style>
 
 </head>
@@ -66,9 +71,7 @@ body {
 		<div class="row">
 			<tiles:insertAttribute name="header" />
 		</div>
-	   <div class="row">
-			
-		</div>
+		<div class="row"></div>
 		<div class="row">
 			<tiles:insertAttribute name="body" />
 		</div>

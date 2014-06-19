@@ -1,5 +1,7 @@
 package com.avihs.movie.business.theater.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,5 +49,21 @@ public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 	@Transactional
 	public void update(Theater theater) {
 		theaterMgmtDao.update(theater);
+	}
+
+	@Transactional
+	public void delete(Theater theater) {
+		theaterMgmtDao.delete(theater);
+	}
+
+	@Override
+	public List<Theater> getTheaters(String location) {
+
+		return theaterMgmtDao.getTheaters(location);
+	}
+
+	@Override
+	public List<Theater> getTheaters(Integer userPkId) {
+		return theaterMgmtDao.getTheaters(userPkId);
 	}
 }

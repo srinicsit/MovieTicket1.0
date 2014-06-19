@@ -2,7 +2,7 @@
 <!DOCTYPE tiles-definitions PUBLIC
        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
-       
+
 <tiles-definitions>
 
 	<definition name="base.definition" template="/WEB-INF/jsp/layout.jsp">
@@ -15,6 +15,16 @@
 	<definition name="theater" extends="base.definition">
 		<put-attribute name="title" value="Theater Details" />
 		<put-attribute name="body" value="/WEB-INF/jsp/theater.jsp" />
+	</definition>
+
+	<definition name="screen" extends="base.definition">
+		<put-attribute name="title" value="Screen Details" />
+		<put-attribute name="body" value="/WEB-INF/jsp/screen.jsp" />
+	</definition>
+
+	<definition name="userLogin" extends="base.definition">
+		<put-attribute name="title" value="User Login" />
+		<put-attribute name="body" value="/WEB-INF/jsp/userLogin.jsp" />
 	</definition>
 
 </tiles-definitions>

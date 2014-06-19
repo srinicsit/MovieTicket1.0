@@ -63,46 +63,44 @@
 
 	<!-- Poincut to apply transactionality to all repository operations -->
 	<aop:config>
-	<aop:pointcut id="repositoryOperation" expression="bean(*Repository*) 
+		<aop:pointcut id="repositoryOperation" expression="bean(*Repository*) 
 		|| bean(*Dao*)" />
-	<aop:advisor pointcut-ref="repositoryOperation"
-	advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="repositoryOperation"
+			advice-ref="txAdvice" />
 	</aop:config>
 
 	<!-- Advice to define transactionality for each kind of repository operation -->
 	<tx:advice id="txAdvice">
-	<tx:attributes>
-	<tx:method name="get*" propagation="REQUIRED" read-only="true" />
-	<tx:method name="is*" propagation="SUPPORTS" read-only="true" />
-	<tx:method name="find*" propagation="REQUIRED" read-only="true" />
-	<tx:method name="load*" propagation="SUPPORTS" read-only="true" />
-	<!-- <tx:method name="save*" propagation="REQUIRED" /> -->
-	<!-- <tx:method name="update*" propagation="REQUIRED" /> -->
-	<!-- <tx:method name="delete*" propagation="REQUIRED" /> -->
-	<!-- <tx:method name="insert*" propagation="REQUIRED" /> -->
-	</tx:attributes>
+		<tx:attributes>
+			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="is*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="load*" propagation="SUPPORTS" read-only="true" />
+			<!-- <tx:method name="save*" propagation="REQUIRED" /> -->
+			<!-- <tx:method name="update*" propagation="REQUIRED" /> -->
+			<!-- <tx:method name="delete*" propagation="REQUIRED" /> -->
+			<!-- <tx:method name="insert*" propagation="REQUIRED" /> -->
+		</tx:attributes>
 	</tx:advice>
 
 	<!-- class path external locations -->
 
 	<!-- import properties configuration placeholder -->
-	<bean
-		id="externalMultienvironmentClasspathJDBCPropertyPlaceholderConfigurer"
+	<bean id="mysqlJDBCPropertyPlaceholderConfigurer"
 		class="com.avihs.movie.core.properties.CustomPropertyPlaceholderConfigurerImpl">
 		<description>
 			PlaceHolder of properties not included in application
 			folder structure
 			Uses external locations from classpath
 		</description>
-		<property name="locations"
-			ref="externalMultienvironmentClasspathJDBCPropertiesLocations" />
+		<property name="locations" ref="mysqlJDBCPropertiesLocations" />
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
 
 	<!-- import configuration properties for mysql profile -->
 
-	<bean id="externalMultienvironmentClasspathJDBCPropertiesLocations"
+	<bean id="mysqlJDBCPropertiesLocations"
 		class="com.avihs.movie.core.properties.PropertiesLocationsFactoryBean">
 		<property name="externalDir" value="config/profiles/properties/mysql" />
 		<property name="locations">

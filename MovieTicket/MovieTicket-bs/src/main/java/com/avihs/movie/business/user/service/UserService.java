@@ -1,5 +1,7 @@
 package com.avihs.movie.business.user.service;
 
-public interface UserService {
+import com.avihs.movie.business.user.model.User;
 
+public interface UserService {
+	User getUser(String userId,String pwd);
 }

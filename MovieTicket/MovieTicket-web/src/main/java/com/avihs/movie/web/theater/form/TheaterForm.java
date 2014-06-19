@@ -21,4 +21,5 @@ public class TheaterForm {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+
 }

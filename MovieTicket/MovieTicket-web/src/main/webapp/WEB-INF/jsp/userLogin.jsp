@@ -8,23 +8,22 @@
 <body>
 
 	<div class="ui-dialog-content ui-widget-content">
-		<h3>Screen Details</h3>
+		<h3>Login</h3>
 		<p class="validateTips">All form fields are required.</p>
 
 		<form:form
-			action="${pageContext.servletContext.contextPath}${'/screen'}"
-			modelAttribute="screenForm" method="post">
+			action="${pageContext.servletContext.contextPath}${'/userLogin'}"
+			modelAttribute="userLoginForm" method="post">
 			<fieldset>
-				<form:label path="location">Location</form:label>
-				<form:input path="location" readonly="true"
+				<form:label path="userId">UserID</form:label>
+				<form:input path="userId"
 					class="text ui-widget-content ui-corner-all" />
 
-				<form:label path="theater">Theater</form:label>
-				<form:input path="theater"
+				<form:label path="pwd">Password</form:label>
+				<form:password path="pwd"
 					class="text ui-widget-content ui-corner-all" />
 
-				<form:label path="name">Name</form:label>
-				<form:input path="name" class="text ui-widget-content ui-corner-all" />
+
 				<form:button>Submit</form:button>
 
 			</fieldset>

@@ -4,12 +4,21 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avihs.movie.business.model.BaseModel;
+import com.avihs.movie.business.model.UserType;
 
 @Entity
 @Table(name = "USER")
+@DynamicUpdate
+@DynamicInsert
+@NamedQueries({ @NamedQuery(name = "getUserForUserIdAndPwd", query = "from User u where u.userId = :userId and u.pwd = :pwd") })
 public class User extends BaseModel {
 
 	/**
@@ -46,6 +55,12 @@ public class User extends BaseModel {
 
 	@Column(name = "CONFIRM_PWD")
 	private String confirmPwd;
+
+	@Column(name = "USER_TYPE")
+	private UserType userType;
+
+	@Column(name = "USER_ID", unique = true)
+	private String userId;
 
 	public String getFirstName() {
 		return firstName;
@@ -125,6 +140,22 @@ public class User extends BaseModel {
 
 	public void setConfirmPwd(String confirmPwd) {
 		this.confirmPwd = confirmPwd;
+	}
+
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

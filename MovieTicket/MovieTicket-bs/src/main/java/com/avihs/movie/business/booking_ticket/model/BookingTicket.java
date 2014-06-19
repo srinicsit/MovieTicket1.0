@@ -6,6 +6,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.model.BookingStatus;
 import com.avihs.movie.business.movie_screen.model.MovieScreen;
@@ -14,6 +17,8 @@ import com.avihs.movie.business.user.model.User;
 
 @Entity
 @Table(name = "BOOKING_TICKET")
+@DynamicUpdate
+@DynamicInsert
 public class BookingTicket extends BaseModel {
 
 	/**

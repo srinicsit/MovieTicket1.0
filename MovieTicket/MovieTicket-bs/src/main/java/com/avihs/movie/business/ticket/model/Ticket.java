@@ -6,11 +6,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.movie_screen.model.MovieScreen;
 
 @Entity
 @Table(name = "TICKET")
+@DynamicUpdate
+@DynamicInsert
 public class Ticket extends BaseModel {
 
 	/**
@@ -22,9 +27,9 @@ public class Ticket extends BaseModel {
 	@ManyToOne
 	private MovieScreen movieScreen;
 
-	@Column(name="PRICE")
+	@Column(name = "PRICE")
 	private Float price;
-	
+
 	@Column(name = "COMMISSION")
 	private Float commission;
 

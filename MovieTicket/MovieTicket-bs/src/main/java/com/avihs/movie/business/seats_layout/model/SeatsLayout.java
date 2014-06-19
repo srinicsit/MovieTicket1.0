@@ -6,12 +6,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.model.SeatType;
 import com.avihs.movie.business.screen.model.Screen;
 
 @Entity
 @Table(name = "SEATS_LAYOUT")
+@DynamicUpdate
+@DynamicInsert
 public class SeatsLayout extends BaseModel {
 
 	/**

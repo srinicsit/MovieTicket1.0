@@ -4,10 +4,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avihs.movie.business.model.BaseModel;
 
 @Entity
 @Table(name="MOVIE")
+@DynamicUpdate
+@DynamicInsert
 public class Movie extends BaseModel {
 
 	/**
