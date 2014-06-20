@@ -1,6 +1,5 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
@@ -68,14 +67,18 @@ body {
 </head>
 <body>
 	<div>
-		<div class="row">
+		<div>
 			<tiles:insertAttribute name="header" />
 		</div>
-		<div class="row"></div>
-		<div class="row">
+
+		<div style="width: 170px; float: left;">
+			<tiles:insertAttribute name="menu" />
+		</div>
+
+		<div style="width: 600px; float: left;">
 			<tiles:insertAttribute name="body" />
 		</div>
-		<div class="row">
+		<div style="clear: both;">
 			<tiles:insertAttribute name="footer" />
 		</div>
 	</div>

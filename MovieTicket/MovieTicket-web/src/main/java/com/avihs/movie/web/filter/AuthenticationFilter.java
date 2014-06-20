@@ -51,7 +51,7 @@ public class AuthenticationFilter implements Filter {
 		// }
 
 		for (String avoidfUrl : urlList) {
-			if (avoidfUrl.matches(url)) {
+			if (url.endsWith(avoidfUrl) ) {
 				allowedRequest = true;
 				break;
 			}

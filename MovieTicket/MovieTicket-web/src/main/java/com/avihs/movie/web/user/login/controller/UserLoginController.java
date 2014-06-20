@@ -25,9 +25,13 @@ public class UserLoginController {
 	private UserService userService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String load(Model model) {
-		model.addAttribute("userLoginForm", new UserLoginForm());
-		return LOGIN_PAGE;
+	public String load(Model model, HttpSession session) {
+		if (session.getAttribute(Constants.LOGGED_IN_USER) == null) {
+			model.addAttribute("userLoginForm", new UserLoginForm());
+			return LOGIN_PAGE;
+		} else {
+			return Constants.REDIRECT + Constants.HOME_PAGE;
+		}
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

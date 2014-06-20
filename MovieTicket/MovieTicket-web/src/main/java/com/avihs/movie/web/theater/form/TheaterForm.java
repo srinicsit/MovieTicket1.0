@@ -2,6 +2,8 @@ package com.avihs.movie.web.theater.form;
 
 public class TheaterForm {
 
+	private Integer theaterId;
+
 	private String name;
 
 	private String location = "Guntur";
@@ -22,4 +24,11 @@ public class TheaterForm {
 		this.location = location;
 	}
 
+	public Integer getTheaterId() {
+		return theaterId;
+	}
+
+	public void setTheaterId(Integer theaterId) {
+		this.theaterId = theaterId;
+	}
 }

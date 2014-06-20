@@ -57,10 +57,9 @@ public class TheaterController {
 		return THEATER_PAGE;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, params = "update")
-	public String update(@RequestParam("delete") Integer theaterId,
-			TheaterForm theaterForm, HttpSession session) {
-
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(TheaterForm theaterForm, HttpSession session) {
+		Integer theaterId = theaterForm.getTheaterId();
 		if (!theaterMgmtService.isTheaterExists(theaterId,
 				theaterForm.getName(), theaterForm.getLocation())) {
 
@@ -75,11 +74,10 @@ public class TheaterController {
 		return THEATER_PAGE;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, params = "delete")
-	public String delete(@RequestParam("delete") Integer theaterId,
-			TheaterForm theaterForm, HttpSession session) {
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String delete(TheaterForm theaterForm, HttpSession session) {
 		Theater theater = new Theater();
-		theater.setId(theaterId);
+		theater.setId(theaterForm.getTheaterId());
 		theaterMgmtService.delete(theater);
 		return THEATER_PAGE;
 	}

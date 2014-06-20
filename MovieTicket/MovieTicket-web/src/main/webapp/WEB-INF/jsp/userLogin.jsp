@@ -4,17 +4,41 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<style type="text/css">
+label,input {
+	display: block;
+}
+
+input.text {
+	margin-bottom: 12px;
+	width: 95%;
+	padding: .4em;
+}
+
+
+</style>
+<script src="<c:url value="/resources/js/jquery-1.10.2.js" />"></script>
+<script src="<c:url value="/resources/js/jquery-ui-1.10.4.js" />"></script>
+<script type="text/javascript">
+	$(function() {
+		debugger;
+		$("#login").button();
+	});
+</script>
+
 </head>
 <body>
 
-	<div class="ui-dialog-content ui-widget-content">
-		<h3>Login</h3>
-		<p class="validateTips">All form fields are required.</p>
+	<div  style="width: 400px;">
 
-		<form:form
-			action="${pageContext.servletContext.contextPath}${'/userLogin'}"
-			modelAttribute="userLoginForm" method="post">
-			<fieldset>
+
+		<fieldset>
+			<legend>Login</legend>
+			<form:form
+				action="${pageContext.servletContext.contextPath}${'/userLogin'}"
+				modelAttribute="userLoginForm" method="post">
+
+				<p class="validateTips">All form fields are required.</p>
 				<form:label path="userId">UserID</form:label>
 				<form:input path="userId"
 					class="text ui-widget-content ui-corner-all" />
@@ -24,10 +48,11 @@
 					class="text ui-widget-content ui-corner-all" />
 
 
-				<form:button>Submit</form:button>
+				<form:button id="login">Submit</form:button>
 
-			</fieldset>
-		</form:form>
+
+			</form:form>
+		</fieldset>
 	</div>
 
 

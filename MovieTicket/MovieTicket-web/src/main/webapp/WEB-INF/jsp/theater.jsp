@@ -29,14 +29,16 @@ fieldset {
 	$(function() {
 		debugger;
 		initDialog();
-
+		var contextPath = $('#contextPath').val();
+//<"top"i>rt<"bottom"flp><"clear">
 		var table = $("#theatersData").DataTable({
 			"dom" : '<"toolbar">frtip',
 			"bProcessing" : true,
+			"bInfo": false,
 			"bServerSide" : true,
 			searching : false,
 			ordering : false,
-			"sAjaxSource" : "./theater/list",
+			"sAjaxSource" : "" + contextPath + "/theater/list",
 			"bJQueryUI" : true,
 			"aoColumns" : [ {
 				"mData" : "name"
@@ -55,7 +57,7 @@ fieldset {
 				"searchable" : false
 			} ]
 		});
-		var toolBarIcons = '<ul id="icons" class="ui-widget ui-helper-clearfix"><li class="ui-state-default ui-corner-all ui-state-hover" title=".ui-icon-plus"><span class="ui-icon ui-icon-plus"></span></li>'
+		var toolBarIcons = 'Theater Details <ul id="icons" class="ui-widget ui-helper-clearfix"><li class="ui-state-default ui-corner-all ui-state-hover" title=".ui-icon-plus"><span class="ui-icon ui-icon-plus"></span></li>'
 				+ '<li class="ui-state-default ui-corner-all ui-state-hover" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></li>'
 				+ '<li class="ui-state-default ui-corner-all ui-state-hover" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash"></span></li></ul>'
 		$("div.toolbar").html(toolBarIcons);
@@ -75,9 +77,9 @@ fieldset {
 					debugger;
 					var row = table.row('.selected').data();
 					$('#name').val(row.name);
-
+					$('#theaterId').val(row.id);
 					document.theaterForm.action = document.theaterForm.action
-							+ "?update=" + row.id
+							+ "/update"
 					$("#dialog").dialog("open");
 
 				});
@@ -90,9 +92,9 @@ fieldset {
 				function() {
 					debugger;
 					var rowId = table.row('.selected').data().id;
-
+					$('#theaterId').val(rowId);
 					document.theaterForm.action = document.theaterForm.action
-							+ "?delete=" + rowId
+							+ "/delete"
 					document.theaterForm.submit();
 				});
 
@@ -123,7 +125,23 @@ fieldset {
 <body>
 
 
-	<div style="height: 30px;"></div>
+
+
+	<div>
+		<table id="theatersData" class="display" >
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Location</th>
+					<th>UserId</th>
+					<th>Id</th>
+				</tr>
+			</thead>
+
+
+		</table>
+	</div>
+
 	<div id="dialog" title="Theater Details">
 
 		<p class="validateTips">All form fields are required.</p>
@@ -141,26 +159,16 @@ fieldset {
 				<form:input path="location" disabled="true"
 					class="text ui-widget-content ui-corner-all" />
 
+				<form:hidden id="theaterId" path="theaterId"></form:hidden>
+
+
+
 			</fieldset>
 		</form:form>
+		<input type="hidden" id="contextPath"
+			value="${pageContext.servletContext.contextPath}">
 
 	</div>
-	<div style="height: 50px;"></div>
-	<div>
-		<table id="theatersData" class="display">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Location</th>
-					<th>UserId</th>
-					<th>Id</th>
-				</tr>
-			</thead>
-
-
-		</table>
-	</div>
-
 
 
 </body>

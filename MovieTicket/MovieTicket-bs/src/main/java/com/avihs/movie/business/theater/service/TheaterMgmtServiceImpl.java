@@ -41,6 +41,7 @@ public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public boolean isTheaterExists(Integer pkId, String theaterName,
 			String location) {
 		return theaterMgmtDao.isTheaterExists(pkId, theaterName, location);

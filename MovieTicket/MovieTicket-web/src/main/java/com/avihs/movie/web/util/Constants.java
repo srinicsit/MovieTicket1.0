@@ -6,4 +6,6 @@ public interface Constants {
 
 	String LOGGED_IN_USER = "user";
 
+	String REDIRECT = "redirect:";
+
 }

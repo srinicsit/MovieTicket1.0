@@ -31,7 +31,7 @@
   <filter-class>com.avihs.movie.web.filter.AuthenticationFilter</filter-class>
       <init-param>
         <param-name>avoid-urls</param-name>
-        <param-value>/index.jsp,/userLogin,/*.js,/*.css,/*.gif,/*.png</param-value>
+        <param-value>/index.jsp,/userLogin,js,css,gif,png</param-value>
     </init-param>
   </filter>
   
