@@ -82,16 +82,7 @@ public class TheaterController {
 		return THEATER_PAGE;
 	}
 
-	@RequestMapping(value = "/list/{location}", method = RequestMethod.GET)
-	public @ResponseBody
-	DataTableObject<Theater> list(@PathVariable String location) {
-		List<Theater> theaters = theaterMgmtService.getTheaters(location);
-		DataTableObject<Theater> dataTableObject = new DataTableObject<Theater>();
-		dataTableObject.setAaData(theaters);
-		return dataTableObject;
-	}
-
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/listForDt", method = RequestMethod.GET)
 	public @ResponseBody
 	DataTableObject<Theater> list(HttpSession session) {
 		User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
@@ -99,5 +90,16 @@ public class TheaterController {
 		DataTableObject<Theater> dataTableObject = new DataTableObject<Theater>();
 		dataTableObject.setAaData(theaters);
 		return dataTableObject;
+	}
+
+	@RequestMapping(value = "/list/{location}", method = RequestMethod.GET)
+	public @ResponseBody
+	List<Theater> list(@PathVariable("location") String location,
+			@RequestParam("term") String name, HttpSession session) {
+		User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
+		List<Theater> theaters = theaterMgmtService.getTheaters(user.getId(),
+				"Guntur", name);
+
+		return theaters;
 	}
 }

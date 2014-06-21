@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -16,6 +18,7 @@ import com.avihs.movie.business.theater.model.Theater;
 @Table(name = "SCREEN")
 @DynamicUpdate
 @DynamicInsert
+@NamedQueries({ @NamedQuery(name = "getScreensForTheater", query = " from Screen s where s.theater=:theaterId") })
 public class Screen extends BaseModel {
 
 	/**

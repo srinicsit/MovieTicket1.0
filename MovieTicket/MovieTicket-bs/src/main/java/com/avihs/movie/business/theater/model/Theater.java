@@ -25,7 +25,7 @@ import com.avihs.movie.business.user.model.User;
 @Table(name = "THEATER")
 @DynamicUpdate(value = true)
 @DynamicInsert(value = true)
-//@SelectBeforeUpdate(value = true)
+// @SelectBeforeUpdate(value = true)
 public class Theater extends BaseModel {
 
 	/**

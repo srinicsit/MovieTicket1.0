@@ -1,14 +1,16 @@
 package com.avihs.movie.web.screen.form;
 
-import com.avihs.movie.business.theater.model.Theater;
-
 public class ScreenForm {
 
-	private String location="Guntur";
+	private String location = "Guntur";
 
 	private String name;
 
-	private Theater theater;
+	private Integer theaterId;
+
+	private String theaterName;
+
+	private Integer screenId;
 
 	public String getLocation() {
 		return location;
@@ -26,11 +28,28 @@ public class ScreenForm {
 		this.name = name;
 	}
 
-	public Theater getTheater() {
-		return theater;
+	public Integer getTheaterId() {
+		return theaterId;
 	}
 
-	public void setTheater(Theater theater) {
-		this.theater = theater;
+	public void setTheaterId(Integer theaterId) {
+		this.theaterId = theaterId;
 	}
+
+	public String getTheaterName() {
+		return theaterName;
+	}
+
+	public void setTheaterName(String theaterName) {
+		this.theaterName = theaterName;
+	}
+
+	public Integer getScreenId() {
+		return screenId;
+	}
+
+	public void setScreenId(Integer screenId) {
+		this.screenId = screenId;
+	}
+
 }

@@ -13,7 +13,10 @@ public interface TheaterMgmtDao<Theater> extends CommonDao<Theater> {
 			String location);
 
 	public List<Theater> getTheaters(String location);
-	
+
 	public List<Theater> getTheaters(Integer userPkId);
+
+	public List<Theater> getTheaters(Integer userPkId, String location,
+			String partialName);
 
 }

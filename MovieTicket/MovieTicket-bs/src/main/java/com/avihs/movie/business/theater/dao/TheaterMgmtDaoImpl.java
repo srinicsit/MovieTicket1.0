@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -64,5 +65,17 @@ public class TheaterMgmtDaoImpl extends CommonDaoImpl<Theater> implements
 		// // criteria.setProjection(p1);
 		// // criteria.setProjection(p2);
 		// return criteria.list();
+	}
+
+	@Override
+	public List<Theater> getTheaters(Integer userPkId, String location,
+			String partialName) {
+		Criteria criteria = getCurrentSession().createCriteria(Theater.class);
+
+		criteria.add(Restrictions.eq("user.id", userPkId));
+		criteria.add(Restrictions.eq("location", location));
+		criteria.add(Restrictions.like("name", partialName, MatchMode.ANYWHERE));
+
+		return criteria.list();
 	}
 }

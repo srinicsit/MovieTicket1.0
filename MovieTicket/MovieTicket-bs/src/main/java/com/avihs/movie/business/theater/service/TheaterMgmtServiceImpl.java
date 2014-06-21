@@ -67,4 +67,11 @@ public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 	public List<Theater> getTheaters(Integer userPkId) {
 		return theaterMgmtDao.getTheaters(userPkId);
 	}
+
+	@Override
+	public List<Theater> getTheaters(Integer userPkId, String location,
+			String partialName) {
+		return theaterMgmtDao.getTheaters(userPkId, location, partialName);
+	}
+
 }

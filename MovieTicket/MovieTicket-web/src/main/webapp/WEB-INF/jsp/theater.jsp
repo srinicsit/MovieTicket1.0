@@ -38,7 +38,7 @@ fieldset {
 			"bServerSide" : true,
 			searching : false,
 			ordering : false,
-			"sAjaxSource" : "" + contextPath + "/theater/list",
+			"sAjaxSource" : "" + contextPath + "/theater/listForDt",
 			"bJQueryUI" : true,
 			"aoColumns" : [ {
 				"mData" : "name"
