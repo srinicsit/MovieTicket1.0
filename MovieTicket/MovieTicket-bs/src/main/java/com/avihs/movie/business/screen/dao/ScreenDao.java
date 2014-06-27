@@ -8,4 +8,6 @@ import com.avihs.movie.business.screen.model.Screen;
 public interface ScreenDao extends CommonDao {
 
 	public List<Screen> getScreens(Integer theaterId);
+
+	public boolean isScreenExists(Integer theaterId, String screenName);
 }

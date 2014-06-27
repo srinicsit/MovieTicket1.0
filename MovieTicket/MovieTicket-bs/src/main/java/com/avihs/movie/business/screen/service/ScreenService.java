@@ -12,4 +12,6 @@ public interface ScreenService {
 	public List<Screen> getScreens(Integer theaterId);
 	
 	public void delete(Screen screen);
+	
+	public boolean isScreenExists(Integer theaterId, String screenName);
 }

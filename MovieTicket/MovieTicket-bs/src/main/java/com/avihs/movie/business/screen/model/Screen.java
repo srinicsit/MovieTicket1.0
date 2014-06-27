@@ -27,9 +27,10 @@ import com.avihs.movie.business.theater.model.Theater;
 @Table(name = "SCREEN")
 @DynamicUpdate
 @DynamicInsert
-@NamedQueries({ @NamedQuery(name = "getScreensForTheater", query = " from Screen s where s.theater=:theaterId") })
+@NamedQueries({
+		@NamedQuery(name = "getScreensForTheater", query = " from Screen s where s.theater=:theaterId"),
+		@NamedQuery(name = "isScreenExists", query = "select s.id,s.name from Screen s where s.theater=:theaterId and s.name=:name") })
 @JsonSerialize(include = Inclusion.NON_EMPTY)
-
 public class Screen extends BaseModel {
 
 	/**
@@ -51,8 +52,7 @@ public class Screen extends BaseModel {
 	@JoinColumn(name = "THEATER_ID")
 	private Theater theater;
 
-	
-	@OneToMany(mappedBy = "screen",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
 	private List<SeatClassType> seatClassTypes = new ArrayList<SeatClassType>(0);
 
 	public String getName() {

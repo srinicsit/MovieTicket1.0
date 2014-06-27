@@ -1,10 +1,7 @@
 package com.avihs.movie.web.screen.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -75,7 +72,9 @@ public class ScreenController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String save(@Valid ScreenForm screenForm,
 			BindingResult bindingResult, Model model, HttpSession session) {
-		if (screenForm.getTheaterId() != null) {
+		if (screenForm.getTheaterId() != null
+				&& !screenService.isScreenExists(screenForm.getTheaterId(),
+						screenForm.getName())) {
 			Screen screen = new Screen();
 			screen.setName(screenForm.getName());
 			screen.setRows(screenForm.getRows());
@@ -86,7 +85,7 @@ public class ScreenController {
 			Theater theater = new Theater();
 			theater.setId(screenForm.getTheaterId());
 			screen.setTheater(theater);
-			
+
 			User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
 			screen.setModifiedUser(user);
 

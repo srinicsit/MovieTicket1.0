@@ -3,6 +3,7 @@ package com.avihs.movie.business.screen.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import com.avihs.movie.business.dao.CommonDaoImpl;
 import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.theater.model.Theater;
-import com.avihs.movie.business.user.model.User;
 
 @Repository
 public class ScreenDaoImpl extends CommonDaoImpl implements ScreenDao {
@@ -39,4 +39,11 @@ public class ScreenDaoImpl extends CommonDaoImpl implements ScreenDao {
 		return list;
 	}
 
+	public boolean isScreenExists(Integer theaterId, String screenName) {
+
+		Query query = getCurrentSession().getNamedQuery("isScreenExists");
+		query.setInteger("theaterId", theaterId);
+		query.setString("name", screenName);
+		return query.list().size() > 0;
+	}
 }

@@ -36,4 +36,9 @@ public class ScreenServiceImpl implements ScreenService {
 	public List<Screen> getScreens(Integer theaterId) {
 		return screenDao.getScreens(theaterId);
 	}
+
+	@Transactional
+	public boolean isScreenExists(Integer theaterId, String screenName) {
+		return screenDao.isScreenExists(theaterId, screenName);
+	}
 }
