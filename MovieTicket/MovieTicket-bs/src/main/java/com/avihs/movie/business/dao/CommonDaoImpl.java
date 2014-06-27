@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-public class CommonDaoImpl<T> implements CommonDao<T> {
+public class CommonDaoImpl implements CommonDao {
 
 	@Resource(name = "sessionFactory")
 	protected SessionFactory sessionFactory;
@@ -16,28 +16,28 @@ public class CommonDaoImpl<T> implements CommonDao<T> {
 	}
 
 	@Override
-	public T get(Class cls, Integer id) {
+	public <T> T get(Class cls, Integer id) {
 		// TODO Auto-generated method stub
 		return (T) getCurrentSession().get(cls, id);
 	}
 
 	@Override
 	@Transactional
-	public void save(T t) {
+	public <T> void save(T t) {
 		getCurrentSession().save(t);
 
 	}
 
 	@Override
 	@Transactional
-	public void update(T t) {
+	public <T> void update(T t) {
 		getCurrentSession().update(t);
 
 	}
 
 	@Override
 	@Transactional
-	public void delete(T t) {
+	public <T> void delete(T t) {
 		getCurrentSession().delete(t);
 
 	}

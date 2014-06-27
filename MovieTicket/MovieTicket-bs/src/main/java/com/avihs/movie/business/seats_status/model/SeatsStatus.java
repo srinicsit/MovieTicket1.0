@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.model.SeatStatus;
-import com.avihs.movie.business.seats_layout.model.SeatsLayout;
+import com.avihs.movie.business.seats.model.Seats;
 
 @Entity
 @Table(name = "SEATS_STATUS")
@@ -29,20 +29,12 @@ public class SeatsStatus extends BaseModel {
 	@Column(name = "SEAT_STATUS")
 	private SeatStatus seatStatus;
 
-	@JoinColumn(name = "SEATS_LAYOUT_ID")
+	@JoinColumn(name = "SEAT_ID")
 	@ManyToOne
-	private SeatsLayout seatsLayout;
+	private Seats seat;
 
 	@Column(name = "DATE")
 	private Date date;
-
-	public SeatsLayout getSeatsLayout() {
-		return seatsLayout;
-	}
-
-	public void setSeatsLayout(SeatsLayout seatsLayout) {
-		this.seatsLayout = seatsLayout;
-	}
 
 	public SeatStatus getSeatStatus() {
 		return seatStatus;
@@ -50,6 +42,14 @@ public class SeatsStatus extends BaseModel {
 
 	public void setSeatStatus(SeatStatus seatStatus) {
 		this.seatStatus = seatStatus;
+	}
+
+	public Seats getSeat() {
+		return seat;
+	}
+
+	public void setSeat(Seats seat) {
+		this.seat = seat;
 	}
 
 }

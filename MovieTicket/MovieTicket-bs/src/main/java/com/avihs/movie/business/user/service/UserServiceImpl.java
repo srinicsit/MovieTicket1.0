@@ -10,7 +10,7 @@ import com.avihs.movie.business.user.model.User;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserDao<User> userDao;
+	private UserDao userDao;
 
 	@Override
 	public User getUser(String userId, String pwd) {

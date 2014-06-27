@@ -1,4 +1,4 @@
-package com.avihs.movie.business.screen.model;
+package com.avihs.movie.business.seat_class_type.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -20,25 +18,20 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.avihs.movie.business.model.BaseModel;
-import com.avihs.movie.business.seat_class_type.model.SeatClassType;
-import com.avihs.movie.business.theater.model.Theater;
+import com.avihs.movie.business.rows.model.Rows;
+import com.avihs.movie.business.screen.model.Screen;
 
 @Entity
-@Table(name = "SCREEN")
+@Table(name = "SEAT_CLASS_TYPE")
 @DynamicUpdate
 @DynamicInsert
-@NamedQueries({ @NamedQuery(name = "getScreensForTheater", query = " from Screen s where s.theater=:theaterId") })
-@JsonSerialize(include = Inclusion.NON_EMPTY)
+@JsonSerialize(include = Inclusion.NON_NULL)
+public class SeatClassType extends BaseModel {
 
-public class Screen extends BaseModel {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "NAME")
-	private String name;
+	@Column(name = "SEAT_CLS_NAME")
+	private String seatClsName;
 
 	@Column(name = "ROWS")
 	private Integer rows;
@@ -46,29 +39,20 @@ public class Screen extends BaseModel {
 	@Column(name = "COLS")
 	private Integer cols;
 
-	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "THEATER_ID")
-	private Theater theater;
+	@JoinColumn(name = "screen_id")
+	@JsonIgnore
+	private Screen screen;
 
-	
-	@OneToMany(mappedBy = "screen",cascade=CascadeType.ALL)
-	private List<SeatClassType> seatClassTypes = new ArrayList<SeatClassType>(0);
+	@OneToMany(mappedBy = "seatClassType",cascade=CascadeType.ALL)
+	private List<Rows> rowsList = new ArrayList<Rows>(0);
 
-	public String getName() {
-		return name;
+	public String getSeatClsName() {
+		return seatClsName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Theater getTheater() {
-		return theater;
-	}
-
-	public void setTheater(Theater theater) {
-		this.theater = theater;
+	public void setSeatClsName(String seatClsName) {
+		this.seatClsName = seatClsName;
 	}
 
 	public Integer getRows() {
@@ -87,8 +71,16 @@ public class Screen extends BaseModel {
 		this.cols = cols;
 	}
 
-	public List<SeatClassType> getSeatClassTypes() {
-		return seatClassTypes;
+	public Screen getScreen() {
+		return screen;
+	}
+
+	public void setScreen(Screen screen) {
+		this.screen = screen;
+	}
+
+	public List<Rows> getRowsList() {
+		return rowsList;
 	}
 
 }

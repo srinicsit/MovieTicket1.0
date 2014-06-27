@@ -13,7 +13,7 @@ import com.avihs.movie.business.theater.model.Theater;
 public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 
 	@Autowired
-	private TheaterMgmtDao<Theater> theaterMgmtDao;
+	private TheaterMgmtDao theaterMgmtDao;
 
 	public TheaterMgmtServiceImpl() {
 		System.out.println("TheaterMgmtServiceImpl");

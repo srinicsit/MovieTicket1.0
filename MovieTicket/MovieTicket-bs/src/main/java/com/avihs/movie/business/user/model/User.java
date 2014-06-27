@@ -8,6 +8,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -18,6 +21,7 @@ import com.avihs.movie.business.model.UserType;
 @Table(name = "USER")
 @DynamicUpdate
 @DynamicInsert
+@JsonSerialize(include = Inclusion.NON_NULL)
 @NamedQueries({ @NamedQuery(name = "getUserForUserIdAndPwd", query = "from User u where u.userId = :userId and u.pwd = :pwd") })
 public class User extends BaseModel {
 
@@ -51,9 +55,11 @@ public class User extends BaseModel {
 	private String idType;
 
 	@Column(name = "PWD")
+	@JsonIgnore
 	private String pwd;
 
 	@Column(name = "CONFIRM_PWD")
+	@JsonIgnore
 	private String confirmPwd;
 
 	@Column(name = "USER_TYPE")

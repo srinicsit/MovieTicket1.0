@@ -7,7 +7,7 @@ import com.avihs.movie.business.dao.CommonDaoImpl;
 import com.avihs.movie.business.user.model.User;
 
 @Repository
-public class UserDaoImpl extends CommonDaoImpl<User> implements UserDao<User> {
+public class UserDaoImpl extends CommonDaoImpl implements UserDao {
 
 	@Override
 	public User getUser(String userId, String pwd) {

@@ -5,7 +5,7 @@ import java.util.List;
 import com.avihs.movie.business.dao.CommonDao;
 import com.avihs.movie.business.theater.model.Theater;
 
-public interface TheaterMgmtDao<Theater> extends CommonDao<Theater> {
+public interface TheaterMgmtDao extends CommonDao {
 
 	public boolean isTheaterExists(String theaterName, String location);
 

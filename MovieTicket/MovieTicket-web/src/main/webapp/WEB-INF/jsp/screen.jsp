@@ -7,6 +7,7 @@
 	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/jquery.dataTables.css" />"
 	rel="stylesheet">
 <script src="<c:url value="/resources/js/jquery.dataTables.js" />"></script>
+<script src="<c:url value="/resources/js/screen-layout.js" />"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <style type="text/css">
 label,input {
@@ -14,9 +15,10 @@ label,input {
 }
 
 input.text {
-	margin-bottom: 12px;
+	/* margin-bottom: 12px;
 	width: 95%;
-	padding: .4em;
+	padding: .4em; */
+	
 }
 
 .ui-autocomplete {
@@ -31,6 +33,17 @@ input.text {
 	$(function() {
 		var contextPath = $('#contextPath').val();
 		$('#submit').button();
+		$('#layout').button();
+
+		$('#rows').spinner({
+			min : 1,
+			max : 26
+		});
+		$('#columns').spinner({
+			min : 1,
+			max : 50
+		});
+
 		initDialog();
 
 		var table = $("#screensData").DataTable({
@@ -121,7 +134,7 @@ input.text {
 		function getTheaterIdVal() {
 			debugger;
 			var val = $('#theaterId').val();
-			if (val == undefined || val == null||val=="") {
+			if (val == undefined || val == null || val == "") {
 				val = -1;
 			}
 			return val;
@@ -147,11 +160,14 @@ input.text {
 			$("#dialog").dialog({
 				modal : true,
 				autoOpen : false,
-				width : 400,
+				width : 900,
+				height : 700,
 				buttons : [ {
 					text : "Ok",
 					click : function() {
 						$(this).dialog("close");
+						var allSeatsInfo = getAllSeatsInfo();
+						$('#seatsInfo').val(allSeatsInfo);
 						document.screenForm.submit();
 
 					}
@@ -196,9 +212,11 @@ input.text {
 			value="${pageContext.servletContext.contextPath}">
 	</div>
 
+
+
 	<div id="dialog" title="Screen Details">
 
-		<p class="validateTips">All form fields are required.</p>
+
 		<div>
 			<form:form name="screenForm"
 				action="${pageContext.servletContext.contextPath}${'/screen'}"
@@ -206,10 +224,77 @@ input.text {
 				<form:hidden path="theaterId" id="theaterId" />
 				<form:hidden path="screenId" id="screenId" />
 				<form:hidden path="theaterName" id="hiddenTheaterName" />
+				<table>
+					<tr>
+						<td><form:label path="name">Screen Name</form:label></td>
+						<td><form:input path="name" class="text " />
+						<td><table>
+								<tr>
+									<td><form:label path="rows">Rows</form:label></td>
+									<td><form:input path="rows" class="text" value="5" /></td>
+								</tr>
+							</table></td>
 
-				<form:label path="name">Screen Name</form:label>
-				<form:input path="name" class="text " />
 
+						<td><form:label path="columns">Columns</form:label></td>
+						<td><form:input path="columns" class="text" value="5" /></td>
+					</tr>
+					<tr>
+						<td><label>Seats</label></td>
+						<td><input type="number" id="seats" value="1" max="10"
+							min="1" /></td>
+
+						<td>
+							<table>
+								<tr>
+									<td><label>Selection Type</label></td>
+									<td><select id="seatSelctionType">
+											<option value="single">Single</option>
+											<option value="row">Row</option>
+											<option value="column">Column</option>
+											<option value="entireRow">Entire Row</option>
+											<option value="entireColumn">Entire Column</option>
+									</select></td>
+								</tr>
+							</table>
+						</td>
+
+					</tr>
+
+					<tr>
+						<td valign="top">Seats Type</td>
+						<td valign="top"><select name="seatsType" id="seatsType"
+							multiple>
+								<option value="balcony">Balcony</option>
+								<option value="first">First Class</option>
+								<option value="gold">Gold Class</option>
+								<option value="silver">Silver Class</option>
+								<option value="bronze">Bronze Class</option>
+						</select></td>
+
+						<td><div id='seatsTypeTableInfo'
+								style="height: 100px; overflow: auto; width: 220px">
+								<table id="seatsTypeTable">
+								</table>
+							</div></td>
+						<td><button type="button" id="layout">Show layout</button></td>
+					</tr>
+
+				</table>
+
+
+
+
+				<div id='screenLayout' style="height: 400px; overflow: auto;">
+					<table id="screenLayoutTable" cellpadding="0" cellspacing="0"
+						border="0" class="display">
+					</table>
+				</div>
+				<!-- 				<div>
+					<button id="submit" type="button">Sumbit</button>
+					<textarea rows="10" cols="50" id="jsonData"></textarea>
+				</div> -->
+				<form:hidden path="seatsInfo" id="seatsInfo" />
 			</form:form>
 		</div>
 		<input type="hidden" id="contextPath"

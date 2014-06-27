@@ -12,7 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.model.BookingStatus;
 import com.avihs.movie.business.movie_screen.model.MovieScreen;
-import com.avihs.movie.business.seats_layout.model.SeatsLayout;
+import com.avihs.movie.business.seats.model.Seats;
 import com.avihs.movie.business.user.model.User;
 
 @Entity
@@ -31,7 +31,7 @@ public class BookingTicket extends BaseModel {
 
 	@JoinColumn(name = "SEATS_LAYOUT_ID")
 	@ManyToOne
-	private SeatsLayout seatsLayout;
+	private Seats seatsLayout;
 
 	@JoinColumn(name = "USER_PK_ID")
 	@ManyToOne
@@ -52,11 +52,11 @@ public class BookingTicket extends BaseModel {
 		this.referenceId = referenceId;
 	}
 
-	public SeatsLayout getSeatsLayout() {
+	public Seats getSeatsLayout() {
 		return seatsLayout;
 	}
 
-	public void setSeatsLayout(SeatsLayout seatsLayout) {
+	public void setSeatsLayout(Seats seatsLayout) {
 		this.seatsLayout = seatsLayout;
 	}
 

@@ -30,11 +30,11 @@ fieldset {
 		debugger;
 		initDialog();
 		var contextPath = $('#contextPath').val();
-//<"top"i>rt<"bottom"flp><"clear">
+		//<"top"i>rt<"bottom"flp><"clear">
 		var table = $("#theatersData").DataTable({
 			"dom" : '<"toolbar">frtip',
 			"bProcessing" : true,
-			"bInfo": false,
+			"bInfo" : false,
 			"bServerSide" : true,
 			searching : false,
 			ordering : false,
@@ -45,17 +45,15 @@ fieldset {
 			}, {
 				"mData" : "location"
 			}, {
-				"mData" : "user.userId"
-			}, {
 				"mData" : "id"
 			}
 
 			],
 			"columnDefs" : [ {
-				"targets" : [ 3 ],
+				"targets" : [ 2 ],
 				"visible" : false,
 				"searchable" : false
-			} ]
+			}]
 		});
 		var toolBarIcons = 'Theater Details <ul id="icons" class="ui-widget ui-helper-clearfix"><li class="ui-state-default ui-corner-all ui-state-hover" title=".ui-icon-plus"><span class="ui-icon ui-icon-plus"></span></li>'
 				+ '<li class="ui-state-default ui-corner-all ui-state-hover" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></li>'
@@ -128,12 +126,11 @@ fieldset {
 
 
 	<div>
-		<table id="theatersData" class="display" >
+		<table id="theatersData" class="cell-border">
 			<thead>
 				<tr>
 					<th>Name</th>
 					<th>Location</th>
-					<th>UserId</th>
 					<th>Id</th>
 				</tr>
 			</thead>

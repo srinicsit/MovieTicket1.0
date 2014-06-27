@@ -6,16 +6,19 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import com.avihs.movie.business.dao.CommonDaoImpl;
+import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.theater.model.Theater;
+import com.avihs.movie.business.user.model.User;
 
 @Repository
-public class TheaterMgmtDaoImpl extends CommonDaoImpl<Theater> implements
-		TheaterMgmtDao<Theater> {
+public class TheaterMgmtDaoImpl extends CommonDaoImpl implements TheaterMgmtDao {
 
 	public TheaterMgmtDaoImpl() {
 		System.out.println("TheaterMgmtDaoImpl");
@@ -52,19 +55,32 @@ public class TheaterMgmtDaoImpl extends CommonDaoImpl<Theater> implements
 
 	@Override
 	public List<Theater> getTheaters(Integer userPkId) {
-		Query query = getCurrentSession().getNamedQuery("findTheatersByUser");
-		query.setInteger("user", userPkId);
-		return query.list();
-		// Criteria criteria =
-		// getCurrentSession().createCriteria(Theater.class);
-		// criteria.add(Restrictions.eq("user", userPkId));
-		//
-		// // Projection p1 = Projections.property("name");
-		// // Projection p2 = Projections.property("location");
-		// //
-		// // criteria.setProjection(p1);
-		// // criteria.setProjection(p2);
-		// return criteria.list();
+		// Query query =
+		// getCurrentSession().getNamedQuery("findTheatersByUser");
+		// query.setInteger("user", userPkId);
+		// return query.list();
+		Criteria criteria = getCurrentSession().createCriteria(Theater.class);
+		User user = new User();
+		user.setId(userPkId);
+		criteria.add(Restrictions.eq("user", user));
+//		criteria.createAlias("user", "u");
+
+		Projection name = Projections.property("name");
+		Projection location = Projections.property("location");
+		Projection id = Projections.property("id");
+//		Projection userId = Projections.property("u.userId");
+
+		ProjectionList projectionList = Projections.projectionList();
+
+		projectionList.add(name, "name");
+		projectionList.add(location, "location");
+		projectionList.add(id, "id");
+//		projectionList.add(userId);
+
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(Theater.class));
+//		criteria.setResultTransformer(Transformers.aliasToBean(User.class));
+		return criteria.list();
 	}
 
 	@Override
