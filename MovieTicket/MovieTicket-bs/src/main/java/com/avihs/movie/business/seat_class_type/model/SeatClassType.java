@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,6 +28,7 @@ import com.avihs.movie.business.screen.model.Screen;
 @DynamicUpdate
 @DynamicInsert
 @JsonSerialize(include = Inclusion.NON_NULL)
+@NamedQueries({ @NamedQuery(name = "getSeatClassTypesForScreen", query = " from SeatClassType sc where sc.screen=:screen_id") })
 public class SeatClassType extends BaseModel {
 
 	private static final long serialVersionUID = 1L;
@@ -44,7 +47,7 @@ public class SeatClassType extends BaseModel {
 	@JsonIgnore
 	private Screen screen;
 
-	@OneToMany(mappedBy = "seatClassType",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "seatClassType", cascade = CascadeType.ALL)
 	private List<Rows> rowsList = new ArrayList<Rows>(0);
 
 	public String getSeatClsName() {

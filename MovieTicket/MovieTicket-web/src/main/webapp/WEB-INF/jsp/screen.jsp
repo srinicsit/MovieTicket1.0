@@ -84,11 +84,14 @@ input.text {
 		});
 
 		$('.ui-icon-pencil').click(function() {
+			debugger;
 			var row = table.row('.selected').data();
 			$('#name').val(row.name);
-			$('#screenId').val(row.id);
-			document.screenForm.action = document.screenForm.action + "/update"
-			$("#dialog").dialog("open");
+			var screenId = row.id;
+			$('#screenId').val(screenId);
+
+			loadScreenDetails(screenId);
+
 			event.preventDefault();
 
 		});
@@ -208,8 +211,7 @@ input.text {
 				</table>
 			</div>
 		</form:form>
-		<input type="hidden" id="contextPath"
-			value="${pageContext.servletContext.contextPath}">
+
 	</div>
 
 

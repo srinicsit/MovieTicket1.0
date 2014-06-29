@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.avihs.movie.business.screen.dao.ScreenDao;
 import com.avihs.movie.business.screen.model.Screen;
+import com.avihs.movie.business.seat_class_type.model.SeatClassType;
 
 @Service
 public class ScreenServiceImpl implements ScreenService {
@@ -40,5 +41,10 @@ public class ScreenServiceImpl implements ScreenService {
 	@Transactional
 	public boolean isScreenExists(Integer theaterId, String screenName) {
 		return screenDao.isScreenExists(theaterId, screenName);
+	}
+
+	@Override
+	public List<SeatClassType> getClassTypes(Integer screenId) {
+		return screenDao.getClassTypes(screenId);
 	}
 }

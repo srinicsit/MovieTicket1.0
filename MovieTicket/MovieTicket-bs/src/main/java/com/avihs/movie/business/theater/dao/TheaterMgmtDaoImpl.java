@@ -63,23 +63,23 @@ public class TheaterMgmtDaoImpl extends CommonDaoImpl implements TheaterMgmtDao 
 		User user = new User();
 		user.setId(userPkId);
 		criteria.add(Restrictions.eq("user", user));
-//		criteria.createAlias("user", "u");
+		// criteria.createAlias("user", "u");
 
 		Projection name = Projections.property("name");
 		Projection location = Projections.property("location");
 		Projection id = Projections.property("id");
-//		Projection userId = Projections.property("u.userId");
+		// Projection userId = Projections.property("u.userId");
 
 		ProjectionList projectionList = Projections.projectionList();
 
 		projectionList.add(name, "name");
 		projectionList.add(location, "location");
 		projectionList.add(id, "id");
-//		projectionList.add(userId);
+		// projectionList.add(userId);
 
 		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Transformers.aliasToBean(Theater.class));
-//		criteria.setResultTransformer(Transformers.aliasToBean(User.class));
+		// criteria.setResultTransformer(Transformers.aliasToBean(User.class));
 		return criteria.list();
 	}
 
@@ -91,6 +91,14 @@ public class TheaterMgmtDaoImpl extends CommonDaoImpl implements TheaterMgmtDao 
 		criteria.add(Restrictions.eq("user.id", userPkId));
 		criteria.add(Restrictions.eq("location", location));
 		criteria.add(Restrictions.like("name", partialName, MatchMode.ANYWHERE));
+
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("id"), "id");
+		projectionList.add(Projections.property("name"), "name");
+		projectionList.add(Projections.property("location"), "location");
+
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(Theater.class));
 
 		return criteria.list();
 	}

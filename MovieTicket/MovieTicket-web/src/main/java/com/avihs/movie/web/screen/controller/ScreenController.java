@@ -87,23 +87,9 @@ public class ScreenController {
 			screen.setTheater(theater);
 
 			User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
-			screen.setModifiedUser(user);
+			// screen.setModifiedUser(user);
 
-			List<SeatClassType> seatClassTypes = getJavaObject(screenForm
-					.getSeatsInfo());
-			if (seatClassTypes != null) {
-				for (SeatClassType seatClassType : seatClassTypes) {
-					seatClassType.setScreen(screen);
-					for (Rows row : seatClassType.getRowsList()) {
-						row.setSeatClassType(seatClassType);
-						for (Seats seat : row.getSeats()) {
-							seat.setRow(row);
-						}
-
-					}
-				}
-				screen.getSeatClassTypes().addAll(seatClassTypes);
-			}
+			setSeatClassTypes(screenForm, screen);
 
 			screenService.save(screen);
 			ScreenForm newScreenForm = getNewScreenForm(screenForm);
@@ -111,6 +97,24 @@ public class ScreenController {
 
 		}
 		return SCREEN_PAGE;
+	}
+
+	private void setSeatClassTypes(ScreenForm screenForm, Screen screen) {
+		List<SeatClassType> seatClassTypes = getJavaObject(screenForm
+				.getSeatsInfo());
+		if (seatClassTypes != null) {
+			for (SeatClassType seatClassType : seatClassTypes) {
+				seatClassType.setScreen(screen);
+				for (Rows row : seatClassType.getRowsList()) {
+					row.setSeatClassType(seatClassType);
+					for (Seats seat : row.getSeats()) {
+						seat.setRow(row);
+					}
+
+				}
+			}
+			screen.getSeatClassTypes().addAll(seatClassTypes);
+		}
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -126,11 +130,11 @@ public class ScreenController {
 			screen.setId(screenForm.getScreenId());
 			screen.setTheater(theater);
 			User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
-			screen.setModifiedUser(user);
+			// screen.setModifiedUser(user);
 
 			ScreenForm newScreenForm = getNewScreenForm(screenForm);
 			model.addAttribute("screenForm", newScreenForm);
-
+			setSeatClassTypes(screenForm, screen);
 			screenService.update(screen);
 		}
 		return SCREEN_PAGE;
@@ -168,6 +172,7 @@ public class ScreenController {
 			dataTableObject = new DataTableObject<Screen>();
 			List<Screen> screens = screenService.getScreens(theaterId);
 			dataTableObject.setAaData(screens);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -175,6 +180,15 @@ public class ScreenController {
 
 		return dataTableObject;
 
+	}
+
+	@RequestMapping(value = "/clsTypes/{screenId}", method = RequestMethod.GET)
+	public @ResponseBody
+	List<SeatClassType> getClassTypes(@PathVariable("screenId") Integer screenId) {
+		List<SeatClassType> seatClassTypes = screenService
+				.getClassTypes(screenId);
+
+		return seatClassTypes;
 	}
 
 	private List<SeatClassType> getJavaObject(String jsonInput) {

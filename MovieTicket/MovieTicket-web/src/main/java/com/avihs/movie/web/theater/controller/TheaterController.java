@@ -49,7 +49,7 @@ public class TheaterController {
 		theater.setName(theaterForm.getName());
 		theater.setLocation(theaterForm.getLocation());
 		theater.setUser(user);
-		theater.setModifiedUser(user);
+//		theater.setModifiedUser(user);
 		if (!theaterMgmtService.isTheaterExists(theaterForm.getName(),
 				theaterForm.getLocation())) {
 			theaterMgmtService.create(theater);
@@ -68,7 +68,7 @@ public class TheaterController {
 			theater.setName(theaterForm.getName());
 			theater.setLocation(theaterForm.getLocation());
 			User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
-			theater.setModifiedUser(user);
+//			theater.setModifiedUser(user);
 			theaterMgmtService.update(theater);
 		}
 		return THEATER_PAGE;

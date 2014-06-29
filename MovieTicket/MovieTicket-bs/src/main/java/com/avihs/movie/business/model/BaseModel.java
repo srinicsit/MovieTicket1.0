@@ -26,10 +26,6 @@ public class BaseModel implements Serializable {
 	@Column(name = "IS_ACTIVE", length = 1)
 	private Character isActive = 'Y';
 
-	@JoinColumn(name = "MODIFIED_USER_PK_ID")
-	@ManyToOne
-	private User modifiedUser;
-
 	public BaseModel() {
 
 	}
@@ -48,14 +44,6 @@ public class BaseModel implements Serializable {
 
 	public void setIsActive(Character isActive) {
 		this.isActive = isActive;
-	}
-
-	public User getModifiedUser() {
-		return modifiedUser;
-	}
-
-	public void setModifiedUser(User modifiedUser) {
-		this.modifiedUser = modifiedUser;
 	}
 
 }

@@ -19,10 +19,12 @@ seatsTypeLabelInfo.first = "First Class";
 seatsTypeLabelInfo.silver = "Silver Class";
 seatsTypeLabelInfo.bronze = "Bronze Class";
 
+var seatsInfo = {};
+
+var SEPERATOR = "_";
+
 function setRowsForSeatType(seatType, noofRowsId) {
-
 	seatsTypeRowsInfo[seatType] = $('#' + noofRowsId).val();
-
 }
 function setColsForSeatType(seatType, noofColssId) {
 
@@ -195,6 +197,7 @@ function getRowsForClsType(clsType, totalRows, totalCols, tableId) {
 		var rowName = rowNames[r];
 		rowNameTd.text(rowName);
 		row.append(rowNameTd);
+		var contextPath = $('#contextPath').val();
 		for (var c = 0; c < totalCols; c++) {
 			var id = clsType + "_" + r + "_" + c;
 
@@ -206,14 +209,26 @@ function getRowsForClsType(clsType, totalRows, totalCols, tableId) {
 			div.attr('onclick', 'changeSeat("' + id + '")');
 
 			var img = $('<img >');
-			img.attr('src', 'resources/img/1_1.png');
+			img.attr('src', contextPath + '/resources/img/1_1.png');
 			img.attr('row', r);
 			img.attr('col', c);
 			img.attr('id', id);
 			img.attr('clsType', clsType);
 			img.attr('clsTableId', tableId);
 			img.attr('rowName', rowName);
-			img.css("visibility", "visible");
+
+			var seatId = clsType + SEPERATOR + r + SEPERATOR + c;
+			var seatData = seatsInfo[seatId];
+			if (seatData != undefined && seatData != null) {
+				if (seatData.status != "hide") {
+					img.css("visibility", "visible");
+				} else {
+					// hidden
+					img.css("visibility", "hidden");
+				}
+			} else {
+				img.css("visibility", "visible");
+			}
 
 			ahref.append(img);
 			div.append(ahref);
@@ -262,8 +277,8 @@ function getAllSeatsInfo() {
 		if (clsTypeInfo == undefined) {
 			clsTypeInfo = {};
 			clsTypeInfo.seatClsName = clsType;
-			clsTypeInfo.totalRows = seatsTypeRowsInfo[clsType];
-			clsTypeInfo.totalCols = seatsTypeColumnsInfo[clsType];
+			clsTypeInfo.rows = seatsTypeRowsInfo[clsType];
+			clsTypeInfo.cols = seatsTypeColumnsInfo[clsType];
 			clsTypeInfo.rowsList = [];
 			allSeats.push(clsTypeInfo);
 		}
@@ -281,6 +296,12 @@ function getAllSeatsInfo() {
 
 		var seatInfo = {};
 
+		var seatId = clsType + SEPERATOR + row + SEPERATOR + col;
+		var existingSeatInfo = seatsInfo[seatId];
+		if (existingSeatInfo != undefined) {
+			seatInfo.id = existingSeatInfo.id;
+		}
+
 		seatInfo.colNum = col;
 		if (status == 'visible') {
 			seatInfo.status = 'show';
@@ -293,8 +314,108 @@ function getAllSeatsInfo() {
 	}
 	debugger;
 	var screen = {};
-	screen.seatClassTypes=allSeats;
+	screen.seatClassTypes = allSeats;
 	return JSON.stringify(screen);
+}
+
+function getSeatInfo() {
+
+}
+
+function loadScreenDetails(screenId) {
+	var contextPath = $('#contextPath').val();
+	$.get(contextPath + "/screen/" + "/clsTypes/" + screenId, function(data) {
+		var screenData = data;
+		for (i in screenData) {
+			var clsType = screenData[i];
+
+			$('#seatsType').val(clsType.seatClsName);
+			seatsTypeRowsInfo[clsType.seatClsName] = clsType.rows;
+			seatsTypeColumnsInfo[clsType.seatClsName] = clsType.cols;
+
+			for (r in screenData[i].rowsList) {
+
+				var row = clsType.rowsList[r];
+				for (c in row.seats) {
+
+					var seat = row.seats[c];
+
+					var seatData = {};
+					seatData.status = seat.status;
+					seatData.id = seat.id;
+
+					var seatId = clsType.seatClsName + SEPERATOR + row.rowNum
+							+ SEPERATOR + seat.colNum;
+
+					seatsInfo[seatId] = seatData;
+				}
+			}
+		}
+		debugger;
+		onSeatTypeChange();
+		document.screenForm.action = document.screenForm.action + "/update"
+		$("#dialog").dialog("open");
+	});
+}
+
+function onSeatTypeChange() {
+
+	// seatsTypsAndRowsInfo
+	var newSeatsTypsAndRowsInfo = {};
+	var values = $('#seatsType').val();
+	if (values == undefined || values.length == 0) {
+		return;
+	}
+	$('#seatsTypeTable').remove();
+
+	var seatsTypeTable = $('<table>');
+	seatsTypeTable.attr('id', 'seatsTypeTable');
+	$('#seatsTypeTableInfo').append(seatsTypeTable);
+
+	for (var i = 0; i < values.length; i++) {
+		var row = $('<tr>');
+
+		var tdSeatType = $('<td>');
+		tdSeatType.text(seatsTypeLabelInfo[values[i]]);
+
+		var tdSeatTypeRows = $('<td>');
+		var id = values[i] + "_" + "Rows";
+
+		var tdCols = $('<td>');
+		var colsId = values[i] + "_" + "Cols";
+
+		var rowsInput = $('<input type="number" max="26" min="1">');
+		$(rowsInput).attr('id', id);
+		newSeatsTypsAndRowsInfo[values[i]] = seatsTypeRowsInfo[values[i]];
+		$(rowsInput).val(seatsTypeRowsInfo[values[i]]);
+		$(rowsInput).attr(
+				"onblur",
+				'javascript:setRowsForSeatType("' + values[i] + '","' + id
+						+ '")');
+		var label = $('<label>');
+		$(label).text("Rows");
+
+		// tdSeatTypeRows.append($(label));
+		tdSeatTypeRows.append(rowsInput);
+
+		var colsInput = $('<input type="number" max="100" min="1">');
+		colsInput.attr('id', colsId);
+		colsInput.val(seatsTypeColumnsInfo[values[i]]);
+		colsInput.attr("onblur", 'javascript:setColsForSeatType("' + values[i]
+				+ '","' + colsId + '")');
+		var colsLabel = $('<label>');
+		$(colsLabel).text("Columns");
+
+		// tdCols.append(colsLabel);
+		tdCols.append(colsInput);
+
+		row.append(tdSeatType);
+		row.append(tdSeatTypeRows);
+		row.append(tdCols);
+		seatsTypeTable.append(row);
+	}
+	seatsTypeRowsInfo = newSeatsTypsAndRowsInfo;
+
 }
 
 $(function() {
@@ -381,65 +502,8 @@ $(function() {
 		$('#jsonData').val(getAllSeatsInfo());
 	});
 
-	$('#seatsType')
-			.change(
-					function() {
-						// seatsTypsAndRowsInfo
-						var newSeatsTypsAndRowsInfo = {};
-						var values = $('#seatsType').val();
-						$('#seatsTypeTable').remove();
-
-						var seatsTypeTable = $('<table>');
-						seatsTypeTable.attr('id', 'seatsTypeTable');
-						$('#seatsTypeTableInfo').append(seatsTypeTable);
-
-						for (var i = 0; i < values.length; i++) {
-							var row = $('<tr>');
-
-							var tdSeatType = $('<td>');
-							tdSeatType.text(seatsTypeLabelInfo[values[i]]);
-
-							var tdSeatTypeRows = $('<td>');
-							var id = values[i] + "_" + "Rows";
-
-							var tdCols = $('<td>');
-							var colsId = values[i] + "_" + "Cols";
-
-							var rowsInput = $('<input type="number" max="26" min="1">');
-							$(rowsInput).attr('id', id);
-							newSeatsTypsAndRowsInfo[values[i]] = seatsTypeRowsInfo[values[i]];
-							$(rowsInput).val(seatsTypeRowsInfo[values[i]]);
-							$(rowsInput).attr(
-									"onblur",
-									'javascript:setRowsForSeatType("'
-											+ values[i] + '","' + id + '")');
-							var label = $('<label>');
-							$(label).text("Rows");
-
-							// tdSeatTypeRows.append($(label));
-							tdSeatTypeRows.append(rowsInput);
-
-							var colsInput = $('<input type="number" max="100" min="1">');
-							colsInput.attr('id', colsId);
-							colsInput.val(seatsTypeAndSeatsInfo[values[i]]);
-							colsInput
-									.attr("onblur",
-											'javascript:setColsForSeatType("'
-													+ values[i] + '","'
-													+ colsId + '")');
-							var colsLabel = $('<label>');
-							$(colsLabel).text("Columns");
-
-							// tdCols.append(colsLabel);
-							tdCols.append(colsInput);
-
-							row.append(tdSeatType);
-							row.append(tdSeatTypeRows);
-							row.append(tdCols);
-							seatsTypeTable.append(row);
-						}
-						seatsTypeRowsInfo = newSeatsTypsAndRowsInfo;
-
-					});
+	$('#seatsType').change(function() {
+		onSeatTypeChange();
+	});
 
 });
