@@ -2,13 +2,9 @@ package com.avihs.movie.web.screen.form;
 
 public class ScreenForm {
 
-	private String location = "Guntur";
-
 	private String name;
 
 	private Integer theaterId;
-
-	private String theaterName;
 
 	private Integer screenId;
 
@@ -28,14 +24,6 @@ public class ScreenForm {
 
 	public static final String STATUS = "status";
 
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -50,14 +38,6 @@ public class ScreenForm {
 
 	public void setTheaterId(Integer theaterId) {
 		this.theaterId = theaterId;
-	}
-
-	public String getTheaterName() {
-		return theaterName;
-	}
-
-	public void setTheaterName(String theaterName) {
-		this.theaterName = theaterName;
 	}
 
 	public Integer getScreenId() {

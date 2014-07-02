@@ -1,5 +1,6 @@
 package com.avihs.movie.business.theater.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -13,7 +14,6 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import com.avihs.movie.business.dao.CommonDaoImpl;
-import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.theater.model.Theater;
 import com.avihs.movie.business.user.model.User;
 
@@ -25,36 +25,40 @@ public class TheaterMgmtDaoImpl extends CommonDaoImpl implements TheaterMgmtDao 
 	}
 
 	@Override
-	public boolean isTheaterExists(String theaterName, String location) {
+	public boolean isTheaterExists(String theaterName, Integer locationId) {
 		Query query = getCurrentSession().getNamedQuery("findByTheaterName");
 		query.setString("name", theaterName);
-		query.setString("location", location);
+		query.setInteger("location", locationId);
 		return !query.list().isEmpty();
 
 	}
 
 	@Override
-	public boolean isTheaterExists(Integer id, String theaterName,
-			String location) {
+	public boolean isTheaterExists(Integer theaterId, String theaterName,
+			Integer locationId) {
 		Query query = getCurrentSession().getNamedQuery(
 				"findByTheaterNameAndNotID");
 		query.setString("name", theaterName);
-		query.setInteger("id", id);
-		query.setString("location", location);
+		query.setInteger("id", theaterId);
+		query.setInteger("location", locationId);
 		return !query.list().isEmpty();
 
 	}
 
 	@Override
-	public List<Theater> getTheaters(String location) {
-		Query query = getCurrentSession().getNamedQuery(
-				"findTheatersByLocation");
-		query.setString("location", location);
-		return query.list();
+	public List<Theater> getTheaters(Integer locationId) {
+		if (locationId != null) {
+			Query query = getCurrentSession().getNamedQuery(
+					"findTheatersByLocation");
+			query.setInteger("location", locationId);
+			return query.list();
+		} else {
+			return new ArrayList<Theater>(0);
+		}
 	}
 
 	@Override
-	public List<Theater> getTheaters(Integer userPkId) {
+	public List<Theater> getTheatersForUser(Integer userPkId) {
 		// Query query =
 		// getCurrentSession().getNamedQuery("findTheatersByUser");
 		// query.setInteger("user", userPkId);
@@ -84,12 +88,12 @@ public class TheaterMgmtDaoImpl extends CommonDaoImpl implements TheaterMgmtDao 
 	}
 
 	@Override
-	public List<Theater> getTheaters(Integer userPkId, String location,
+	public List<Theater> getTheaters(Integer userPkId, Integer locationId,
 			String partialName) {
 		Criteria criteria = getCurrentSession().createCriteria(Theater.class);
 
 		criteria.add(Restrictions.eq("user.id", userPkId));
-		criteria.add(Restrictions.eq("location", location));
+		criteria.add(Restrictions.eq("location.id", locationId));
 		criteria.add(Restrictions.like("name", partialName, MatchMode.ANYWHERE));
 
 		ProjectionList projectionList = Projections.projectionList();

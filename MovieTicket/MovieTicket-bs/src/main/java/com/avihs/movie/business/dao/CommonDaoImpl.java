@@ -1,17 +1,12 @@
 package com.avihs.movie.business.dao;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.hibernate.EntityMode;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.type.Type;
 import org.springframework.transaction.annotation.Transactional;
 
 public class CommonDaoImpl implements CommonDao {
@@ -50,55 +45,17 @@ public class CommonDaoImpl implements CommonDao {
 
 	}
 
-	public boolean isSkipClass(Class clazz) {
-		Class[] skippedClasses = new Class[] {
-		// classes to skip
-		};
-		return Arrays.asList(skippedClasses).contains(clazz);
-	}
+	public <T> List<T> get(Class cls) {
 
-	protected void forceLoad(Object entity) throws HibernateException {
-		if (entity == null) {
-			return;
-		}
+		Criteria criteria = getCurrentSession().createCriteria(cls);
+		return criteria.list();
 
-		if (isSkipClass(entity.getClass())) {
-			return;
-		}
-
-		ClassMetadata classMetadata = getSessionFactory().getClassMetadata(
-				entity.getClass());
-
-		if (classMetadata == null) {
-			return;
-		}
-
-		Hibernate.initialize(entity);
-
-		for (int i = 0, n = classMetadata.getPropertyNames().length; i < n; i++) {
-			String propertyName = classMetadata.getPropertyNames()[i];
-			Type type = classMetadata.getPropertyType(propertyName);
-
-			if (type.isEntityType()) {
-				Object subEntity = classMetadata.getPropertyValue(entity,
-						propertyName);
-				forceLoad(subEntity);
-
-			}
-			if (type.isCollectionType()) {
-				Collection collection = (Collection) classMetadata
-						.getPropertyValue(entity, propertyName);
-				if (collection != null && collection.size() > 0) {
-					for (Object collectionItem : collection) {
-						forceLoad(collectionItem);
-					}
-				}
-			}
-		}
 	}
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
+
+
 
 }

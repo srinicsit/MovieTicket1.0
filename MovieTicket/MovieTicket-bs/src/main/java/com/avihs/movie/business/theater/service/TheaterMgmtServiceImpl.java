@@ -36,15 +36,16 @@ public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public boolean isTheaterExists(String theaterName, String location) {
-		return theaterMgmtDao.isTheaterExists(theaterName, location);
+	public boolean isTheaterExists(String theaterName, Integer locationId) {
+		return theaterMgmtDao.isTheaterExists(theaterName, locationId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public boolean isTheaterExists(Integer pkId, String theaterName,
-			String location) {
-		return theaterMgmtDao.isTheaterExists(pkId, theaterName, location);
+	public boolean isTheaterExists(Integer theaterId, String theaterName,
+			Integer locationId) {
+		return theaterMgmtDao.isTheaterExists(theaterId, theaterName,
+				locationId);
 	}
 
 	@Transactional
@@ -58,20 +59,20 @@ public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 	}
 
 	@Override
-	public List<Theater> getTheaters(String location) {
+	public List<Theater> getTheaters(Integer locationId) {
 
-		return theaterMgmtDao.getTheaters(location);
+		return theaterMgmtDao.getTheaters(locationId);
 	}
 
 	@Override
-	public List<Theater> getTheaters(Integer userPkId) {
-		return theaterMgmtDao.getTheaters(userPkId);
+	public List<Theater> getTheatersForUser(Integer userPkId) {
+		return theaterMgmtDao.getTheatersForUser(userPkId);
 	}
 
 	@Override
-	public List<Theater> getTheaters(Integer userPkId, String location,
+	public List<Theater> getTheaters(Integer userPkId, Integer locationId,
 			String partialName) {
-		return theaterMgmtDao.getTheaters(userPkId, location, partialName);
+		return theaterMgmtDao.getTheaters(userPkId, locationId, partialName);
 	}
 
 }

@@ -28,4 +28,14 @@
 		<put-attribute name="body" value="/WEB-INF/jsp/userLogin.jsp" />
 	</definition>
 
+	<definition name="movie" extends="base.definition">
+		<put-attribute name="title" value="movies"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/jsp/movie.jsp"></put-attribute>
+	</definition>
+
+	<definition name="assign_movie" extends="base.definition">
+		<put-attribute name="title" value="Assign Movie"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/jsp/movie_assign.jsp"></put-attribute>
+	</definition>
+
 </tiles-definitions>

@@ -56,8 +56,12 @@
 					<li><a
 						href="${pageContext.servletContext.contextPath}${'/screen'}">Screen
 							Details</a></li>
-					<li><a href="#">Movie Details</a></li>
-
+					<li><a
+						href="${pageContext.servletContext.contextPath}${'/movies'}">Movie
+							Details</a></li>
+					<li><a
+						href="${pageContext.servletContext.contextPath}${'/movieAssign'}">Assign
+							Movie</a></li>
 
 					<li><a
 						href="${pageContext.servletContext.contextPath}${'/userLogin?logout=logout'}">Logout</a></li>

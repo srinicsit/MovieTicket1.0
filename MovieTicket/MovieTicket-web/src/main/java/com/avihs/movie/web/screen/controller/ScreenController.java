@@ -1,6 +1,7 @@
 package com.avihs.movie.web.screen.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -31,6 +32,7 @@ import com.avihs.movie.business.user.model.User;
 import com.avihs.movie.web.screen.form.ScreenForm;
 import com.avihs.movie.web.util.Constants;
 import com.avihs.movie.web.util.DataTableObject;
+import com.avihs.movie.web.util.JsonResponse;
 
 @Controller
 @RequestMapping("/screen")
@@ -59,44 +61,48 @@ public class ScreenController {
 
 	@RequestMapping(method = RequestMethod.GET, params = "loadTheaters")
 	public String loadTheaters(@Valid ScreenForm screenForm, ModelMap model) {
-
-		List<Theater> theaters = theaterMgmtService.getTheaters(screenForm
-				.getLocation());
-
 		model.addAttribute("screenForm", screenForm);
-		model.addAttribute("theaters", theaters);
-
 		return SCREEN_PAGE;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String save(@Valid ScreenForm screenForm,
+	public @ResponseBody
+	JsonResponse save(@Valid ScreenForm screenForm,
 			BindingResult bindingResult, Model model, HttpSession session) {
-		if (screenForm.getTheaterId() != null
-				&& !screenService.isScreenExists(screenForm.getTheaterId(),
-						screenForm.getName())) {
-			Screen screen = new Screen();
-			screen.setName(screenForm.getName());
-			screen.setRows(screenForm.getRows());
-			screen.setCols(screenForm.getColumns());
+		JsonResponse response = new JsonResponse();
 
-			// Theater theater = theaterMgmtService.getTheater(screenForm
-			// .getTheaterId());
-			Theater theater = new Theater();
-			theater.setId(screenForm.getTheaterId());
-			screen.setTheater(theater);
+		if (!bindingResult.hasErrors()) {
+			response.setStatus("SUCCESS");
+			if (screenForm.getTheaterId() != null
+					&& !screenService.isScreenExists(screenForm.getTheaterId(),
+							screenForm.getName())) {
+				Screen screen = new Screen();
+				screen.setName(screenForm.getName());
+				screen.setRows(screenForm.getRows());
+				screen.setCols(screenForm.getColumns());
 
-			User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
-			// screen.setModifiedUser(user);
+				// Theater theater = theaterMgmtService.getTheater(screenForm
+				// .getTheaterId());
+				Theater theater = new Theater();
+				theater.setId(screenForm.getTheaterId());
+				screen.setTheater(theater);
 
-			setSeatClassTypes(screenForm, screen);
+				User user = (User) session
+						.getAttribute(Constants.LOGGED_IN_USER);
+				// screen.setModifiedUser(user);
 
-			screenService.save(screen);
-			ScreenForm newScreenForm = getNewScreenForm(screenForm);
-			model.addAttribute("screenForm", newScreenForm);
+				setSeatClassTypes(screenForm, screen);
 
+				screenService.save(screen);
+				ScreenForm newScreenForm = getNewScreenForm(screenForm);
+				model.addAttribute("screenForm", newScreenForm);
+
+			}
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(bindingResult.getAllErrors());
 		}
-		return SCREEN_PAGE;
+		return response;
 	}
 
 	private void setSeatClassTypes(ScreenForm screenForm, Screen screen) {
@@ -118,48 +124,67 @@ public class ScreenController {
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public String update(@Valid ScreenForm screenForm,
+	public @ResponseBody
+	JsonResponse update(@Valid ScreenForm screenForm,
 			BindingResult bindingResult, Model model, HttpSession session) {
-		if (screenForm.getScreenId() != null) {
-			Screen screen = new Screen();
-			screen.setName(screenForm.getName());
-			// Theater theater = theaterMgmtService.getTheater(screenForm
-			// .getTheaterId());
-			Theater theater = new Theater();
-			theater.setId(screenForm.getTheaterId());
-			screen.setId(screenForm.getScreenId());
-			screen.setTheater(theater);
-			User user = (User) session.getAttribute(Constants.LOGGED_IN_USER);
-			// screen.setModifiedUser(user);
 
-			ScreenForm newScreenForm = getNewScreenForm(screenForm);
-			model.addAttribute("screenForm", newScreenForm);
-			setSeatClassTypes(screenForm, screen);
-			screenService.update(screen);
+		JsonResponse response = new JsonResponse();
+
+		if (!bindingResult.hasErrors()) {
+			response.setStatus("SUCCESS");
+			if (screenForm.getScreenId() != null) {
+				Screen screen = new Screen();
+				screen.setName(screenForm.getName());
+				// Theater theater = theaterMgmtService.getTheater(screenForm
+				// .getTheaterId());
+				Theater theater = new Theater();
+				theater.setId(screenForm.getTheaterId());
+				screen.setId(screenForm.getScreenId());
+				screen.setTheater(theater);
+				User user = (User) session
+						.getAttribute(Constants.LOGGED_IN_USER);
+				// screen.setModifiedUser(user);
+
+				ScreenForm newScreenForm = getNewScreenForm(screenForm);
+				model.addAttribute("screenForm", newScreenForm);
+				setSeatClassTypes(screenForm, screen);
+				screenService.update(screen);
+			}
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(bindingResult.getAllErrors());
 		}
-		return SCREEN_PAGE;
+		return response;
 	}
 
 	private ScreenForm getNewScreenForm(ScreenForm screenForm) {
 		ScreenForm newScreenForm = new ScreenForm();
-		newScreenForm.setLocation(screenForm.getLocation());
-		newScreenForm.setTheaterName(screenForm.getTheaterName());
 		newScreenForm.setTheaterId(screenForm.getTheaterId());
 		return newScreenForm;
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String delete(@Valid ScreenForm screenForm,
+	public @ResponseBody
+	JsonResponse delete(@Valid ScreenForm screenForm,
 			BindingResult bindingResult, Model model, HttpSession session) {
-		if (screenForm.getScreenId() != null) {
-			Screen screen = new Screen();
-			screen.setId(screenForm.getScreenId());
-			screenService.delete(screen);
+		JsonResponse response = new JsonResponse();
 
-			ScreenForm newScreenForm = getNewScreenForm(screenForm);
-			model.addAttribute("screenForm", newScreenForm);
+		if (!bindingResult.hasErrors()) {
+			response.setStatus("SUCCESS");
+			if (screenForm.getScreenId() != null) {
+				Screen screen = new Screen();
+				screen.setId(screenForm.getScreenId());
+				//seatClassTypeService.deleteSeatClasses(screenForm.getScreenId());
+				screenService.delete(screen);
+
+				ScreenForm newScreenForm = getNewScreenForm(screenForm);
+				model.addAttribute("screenForm", newScreenForm);
+			}
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(bindingResult.getAllErrors());
 		}
-		return SCREEN_PAGE;
+		return response;
 	}
 
 	@RequestMapping(value = "/{theaterId}", method = RequestMethod.GET)
@@ -179,6 +204,23 @@ public class ScreenController {
 		}
 
 		return dataTableObject;
+
+	}
+
+	@RequestMapping(value = "/list/{theaterId}", method = RequestMethod.GET)
+	public @ResponseBody
+	List<Screen> getScreensList(@PathVariable("theaterId") Integer theaterId) {
+
+		List<Screen> screens = new ArrayList<Screen>();
+		try {
+			screens = screenService.getScreens(theaterId);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return screens;
 
 	}
 

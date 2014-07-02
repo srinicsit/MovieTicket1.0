@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -44,7 +45,9 @@ public class Rows extends BaseModel {
 	@JsonIgnore
 	private SeatClassType seatClassType;
 
-	@OneToMany(mappedBy = "row",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "row")
+	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST,
+			org.hibernate.annotations.CascadeType.REMOVE })
 	private List<Seats> seats = new ArrayList<Seats>(0);
 
 	public Integer getRowNum() {

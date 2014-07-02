@@ -53,7 +53,7 @@ input.text {
 			"bServerSide" : false,
 			searching : false,
 			ordering : false,
-			"sAjaxSource" : contextPath + "/screen/" + getTheaterIdVal(),
+			// 			"sAjaxSource" : contextPath + "/screen/" + getTheaterIdVal(),
 			"bJQueryUI" : true,
 			"aoColumns" : [ {
 				"mData" : "name"
@@ -102,37 +102,17 @@ input.text {
 		});
 
 		$('.ui-icon-trash').click(function() {
+			debugger;
 			var rowId = table.row('.selected').data().id;
 			$('#screenId').val(rowId);
 			document.screenForm.action = document.screenForm.action + "/delete"
-			document.screenForm.submit();
+			submitForm();
 
 		});
 
-		$("#theaterName").autocomplete(
-				{
-					source : $('#contextPath').val() + "/theater/list/"
-							+ $("#location").val(),
-					minLength : 1,
-					focus : function(event, ui) {
-						$("#theaterName").val(ui.item.name);
-
-						return false;
-					},
-					change : function(event, ui) {
-
-					},
-					select : function(event, ui) {
-						$("#theaterName").val(ui.item.name);
-						$('#theaterId').val(ui.item.id)
-						$('#hiddenTheaterName').val(ui.item.name)
-						fillDataInTable();
-						return false;
-					}
-				}).data("ui-autocomplete")._renderItem = function(ul, item) {
-
-			return $("<li>").append("<a>" + item.name + "</a>").appendTo(ul);
-		};
+		createLocation('locations');
+		//createLocation('#locationName');
+		createTheater("theaterName");
 
 		function getTheaterIdVal() {
 			debugger;
@@ -141,6 +121,28 @@ input.text {
 				val = -1;
 			}
 			return val;
+		}
+
+		function getLocationIdVal() {
+			debugger;
+			var val = $('#locationId').val();
+			if (val == undefined || val == null || val == "") {
+				val = -1;
+			}
+			return val;
+		}
+
+		function submitForm() {
+			$.ajax({
+				type : "post",
+				url : document.screenForm.action,
+				data : $("form").serialize(),
+				success : function(data) {
+					debugger;
+					fillDataInTable();
+
+				}
+			})
 		}
 
 		function fillDataInTable() {
@@ -159,28 +161,86 @@ input.text {
 			});
 		}
 
-		function initDialog() {
-			$("#dialog").dialog({
-				modal : true,
-				autoOpen : false,
-				width : 900,
-				height : 700,
-				buttons : [ {
-					text : "Ok",
-					click : function() {
-						$(this).dialog("close");
-						var allSeatsInfo = getAllSeatsInfo();
-						$('#seatsInfo').val(allSeatsInfo);
-						document.screenForm.submit();
+		function createLocation(locationId) {
 
-					}
-				}, {
-					text : "Cancel",
-					click : function() {
-						$(this).dialog("close");
-					}
-				} ]
-			});
+			$('#' + locationId).autocomplete({
+				source : $('#contextPath').val() + "/locations/partialList",
+				minLength : 1,
+				focus : function(event, ui) {
+					$('#' + locationId).val(ui.item.name);
+					return false;
+				},
+				select : function(event, ui) {
+					debugger;
+					$('#locationId').val(ui.item.id)
+					createTheater("theaterName");
+					return false;
+				}
+
+			}).data("ui-autocomplete")._renderItem = function(ul, item) {
+				return $("<li>").append("<a>" + item.name + "</a>")
+						.appendTo(ul);
+			};
+		}
+
+		function createTheater(theaterId) {
+			$('#' + theaterId).autocomplete(
+					{
+						source : $('#contextPath').val() + "/theater/list/"
+								+ getLocationIdVal(),
+						minLength : 1,
+						focus : function(event, ui) {
+							$("#" + theaterId).val(ui.item.name);
+
+							return false;
+						},
+						change : function(event, ui) {
+
+						},
+						select : function(event, ui) {
+							$("#theaterName").val(ui.item.name);
+							$('#theaterId').val(ui.item.id)
+							$('#hiddenTheaterName').val(ui.item.name)
+							fillDataInTable();
+							return false;
+						}
+					}).data("ui-autocomplete")._renderItem = function(ul, item) {
+
+				return $("<li>").append("<a>" + item.name + "</a>")
+						.appendTo(ul);
+			};
+		}
+
+		function initDialog() {
+			$("#dialog").dialog(
+					{
+						modal : true,
+						autoOpen : false,
+						width : 900,
+						height : 700,
+						buttons : [
+								{
+									text : "Ok",
+									click : function() {
+										$(this).dialog("close");
+										var allSeatsInfo = getAllSeatsInfo();
+										$('#seatsInfo').val(allSeatsInfo);
+										submitForm();
+										document.screenForm.action = $(
+												'#contextPath').val()
+												+ "/screen";
+									}
+								},
+								{
+									text : "Cancel",
+									click : function() {
+										document.screenForm.action = $(
+												'#contextPath').val()
+												+ "/screen";
+										$(this).dialog("close");
+									}
+								} ]
+					});
 		}
 
 	})
@@ -189,28 +249,36 @@ input.text {
 <body>
 
 	<div>
-		<form:form modelAttribute="screenForm" method="post">
-			<fieldset>
-				<form:label path="location">Location</form:label>
-				<form:input path="location" disabled="true" id="location"
-					class="text ui-widget-content ui-corner-all" />
 
-				<form:label path="theaterName">Theater</form:label>
-				<form:input path="theaterName" id="theaterName" class="text " />
-
-
-			</fieldset>
+		<fieldset>
 			<div>
-				<table id="screensData" class="display">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Id</th>
-						</tr>
-					</thead>
-				</table>
+				<label for="locations">Location</label>
 			</div>
-		</form:form>
+			<div>
+
+				<input id="locations" /> <input id="locationId" type="hidden">
+			</div>
+
+			<div>
+				<label for="theaterName">Theater</label>
+			</div>
+			<div>
+				<input id="theaterName" class="text" />
+			</div>
+
+
+		</fieldset>
+		<div>
+			<table id="screensData" class="display">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Id</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+
 
 	</div>
 
@@ -225,7 +293,7 @@ input.text {
 				modelAttribute="screenForm" method="post">
 				<form:hidden path="theaterId" id="theaterId" />
 				<form:hidden path="screenId" id="screenId" />
-				<form:hidden path="theaterName" id="hiddenTheaterName" />
+
 				<table>
 					<tr>
 						<td><form:label path="name">Screen Name</form:label></td>
@@ -242,7 +310,7 @@ input.text {
 						<td><form:input path="columns" class="text" value="5" /></td>
 					</tr>
 					<tr>
-						<td><label>Seats</label></td>
+						<td><label>Seats</label>
 						<td><input type="number" id="seats" value="1" max="10"
 							min="1" /></td>
 

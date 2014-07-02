@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -28,7 +29,9 @@ import com.avihs.movie.business.screen.model.Screen;
 @DynamicUpdate
 @DynamicInsert
 @JsonSerialize(include = Inclusion.NON_NULL)
-@NamedQueries({ @NamedQuery(name = "getSeatClassTypesForScreen", query = " from SeatClassType sc where sc.screen=:screen_id") })
+@NamedQueries({
+		@NamedQuery(name = "getSeatClassTypesForScreen", query = " from SeatClassType sc where sc.screen=:screen_id"),
+		@NamedQuery(name = "delSeatClassTypesForScreen", query = " delete from SeatClassType sc where sc.screen=:screen_id") })
 public class SeatClassType extends BaseModel {
 
 	private static final long serialVersionUID = 1L;
@@ -47,7 +50,9 @@ public class SeatClassType extends BaseModel {
 	@JsonIgnore
 	private Screen screen;
 
-	@OneToMany(mappedBy = "seatClassType", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "seatClassType")
+	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST,
+			org.hibernate.annotations.CascadeType.REMOVE })
 	private List<Rows> rowsList = new ArrayList<Rows>(0);
 
 	public String getSeatClsName() {

@@ -13,9 +13,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -47,12 +47,13 @@ public class Screen extends BaseModel {
 	@Column(name = "COLS")
 	private Integer cols;
 
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "THEATER_ID")
 	private Theater theater;
 
-	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "screen")
+	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST,
+			org.hibernate.annotations.CascadeType.REMOVE })
 	private List<SeatClassType> seatClassTypes = new ArrayList<SeatClassType>(0);
 
 	public String getName() {

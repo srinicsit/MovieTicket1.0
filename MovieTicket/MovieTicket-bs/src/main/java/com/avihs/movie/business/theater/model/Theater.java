@@ -2,17 +2,17 @@ package com.avihs.movie.business.theater.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
 
+import com.avihs.movie.business.location.model.Location;
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.user.model.User;
 
@@ -36,11 +36,13 @@ public class Theater extends BaseModel {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "LOCATION")
-	private String location;
+	@JoinColumn(name = "LOCATION_ID")
+	@ManyToOne
+	private Location location;
 
 	@JoinColumn(name = "user_pk_id")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
+	@JsonIgnore
 	private User user;
 
 	public String getName() {
@@ -51,11 +53,11 @@ public class Theater extends BaseModel {
 		this.name = name;
 	}
 
-	public String getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
 

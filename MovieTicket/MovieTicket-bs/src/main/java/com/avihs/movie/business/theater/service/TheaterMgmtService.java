@@ -10,19 +10,19 @@ public interface TheaterMgmtService {
 
 	public void update(Theater theater);
 
-	public boolean isTheaterExists(String theaterName, String location);
+	public boolean isTheaterExists(String theaterName, Integer locationId);
 
-	public boolean isTheaterExists(Integer pkId, String theaterName,
-			String location);
+	public boolean isTheaterExists(Integer theaterId, String theaterName,
+			Integer locationId);
 
-	public List<Theater> getTheaters(String location);
+	public List<Theater> getTheaters(Integer locationId);
 
-	public List<Theater> getTheaters(Integer userPkId);
+	public List<Theater> getTheatersForUser(Integer userPkId);
 
 	public Theater getTheater(Integer theaterPkId);
 
 	public void delete(Theater theater);
 
-	public List<Theater> getTheaters(Integer userPkId, String location,
+	public List<Theater> getTheaters(Integer userPkId, Integer locationId,
 			String partialName);
 }

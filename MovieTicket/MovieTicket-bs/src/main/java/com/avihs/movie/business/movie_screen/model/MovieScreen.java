@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -19,6 +21,7 @@ import com.avihs.movie.business.screen.model.Screen;
 @Table(name = "MOVIE_SCREEN")
 @DynamicUpdate
 @DynamicInsert
+@NamedQueries({ @NamedQuery(name = "getMovieScreens", query = "from MovieScreen where movie=:movieId") })
 public class MovieScreen extends BaseModel {
 
 	/**
@@ -34,8 +37,14 @@ public class MovieScreen extends BaseModel {
 	@ManyToOne
 	private Screen screen;
 
-	@Column(name = "SHOW_TIME")
-	private Date showTime;
+	@Column(name = "SHOW_DATE")
+	private Date showDate;
+
+	@Column(name = "SHOW_HOURS")
+	private Integer showHours;
+
+	@Column(name = "SHOW_MINS")
+	private Integer showMins;
 
 	public Movie getMovie() {
 		return movie;
@@ -53,12 +62,28 @@ public class MovieScreen extends BaseModel {
 		this.screen = screen;
 	}
 
-	public Date getShowTime() {
-		return showTime;
+	public Date getShowDate() {
+		return showDate;
 	}
 
-	public void setShowTime(Date showTime) {
-		this.showTime = showTime;
+	public void setShowDate(Date showDate) {
+		this.showDate = showDate;
+	}
+
+	public Integer getShowHours() {
+		return showHours;
+	}
+
+	public void setShowHours(Integer showHours) {
+		this.showHours = showHours;
+	}
+
+	public Integer getShowMins() {
+		return showMins;
+	}
+
+	public void setShowMins(Integer showMins) {
+		this.showMins = showMins;
 	}
 
 }

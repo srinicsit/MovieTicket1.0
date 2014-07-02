@@ -13,13 +13,22 @@ public class SeatClassTypeServiceImpl implements SeatClassTypeService {
 	@Autowired
 	private SeatClassTypeDao seatClassTypeDao;
 
+	@Override
 	@Transactional
 	public void save(SeatClassType seatClassType) {
 		seatClassTypeDao.save(seatClassType);
 	}
 
+	@Override
 	@Transactional
 	public void update(SeatClassType seatClassType) {
 		seatClassTypeDao.update(seatClassType);
+	}
+
+	@Override
+	@Transactional
+	public void deleteSeatClasses(Integer screenId) {
+		seatClassTypeDao.deleteSeatClasses(screenId);
+
 	}
 }
