@@ -17,7 +17,13 @@
 		// 		$("#tabs").tabs();
 		// 		$("#radioset").buttonset();
 
-		$("#rerun").button().click(function() {
+		createMenu('admin');
+		createMenu('user');
+
+	});
+
+	function createMenu(id) {
+		$("#" + id).button().click(function() {
 
 		}).next().button({
 			text : false,
@@ -35,8 +41,7 @@
 			});
 			return false;
 		}).parent().buttonset().next().hide().menu();
-
-	});
+	}
 </script>
 
 </head>
@@ -46,7 +51,7 @@
 		<c:if test="${sessionScope.user != null}">
 			<div>
 				<div>
-					<button id="rerun" type="button">Admin</button>
+					<button id="admin" type="button">Admin</button>
 					<button id="select">Select an action</button>
 				</div>
 				<ul>
@@ -67,6 +72,23 @@
 						href="${pageContext.servletContext.contextPath}${'/userLogin?logout=logout'}">Logout</a></li>
 
 
+
+				</ul>
+			</div>
+
+			<div>
+				<div>
+					<button id="user" type="button">User</button>
+					<button id="selectUser">Select an action</button>
+				</div>
+				<ul>
+					<li><a
+						href="${pageContext.servletContext.contextPath}${'/bookTicket'}">Book
+							Ticket</a></li>
+					<li><a href="#">User Registration</a></li>
+
+					<li><a
+						href="${pageContext.servletContext.contextPath}${'/userLogin?logout=logout'}">Logout</a></li>
 
 				</ul>
 			</div>

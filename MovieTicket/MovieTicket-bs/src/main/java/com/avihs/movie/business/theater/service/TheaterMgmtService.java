@@ -23,6 +23,8 @@ public interface TheaterMgmtService {
 
 	public void delete(Theater theater);
 
+	public Theater loadTheater(Integer id);
+
 	public List<Theater> getTheaters(Integer userPkId, Integer locationId,
 			String partialName);
 }

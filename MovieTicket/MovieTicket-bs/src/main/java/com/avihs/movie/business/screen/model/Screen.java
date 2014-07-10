@@ -13,9 +13,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -29,8 +29,9 @@ import com.avihs.movie.business.theater.model.Theater;
 @DynamicInsert
 @NamedQueries({
 		@NamedQuery(name = "getScreensForTheater", query = " from Screen s where s.theater=:theaterId"),
-		@NamedQuery(name = "isScreenExists", query = "select s.id,s.name from Screen s where s.theater=:theaterId and s.name=:name") })
-@JsonSerialize(include = Inclusion.NON_EMPTY)
+		@NamedQuery(name = "isScreenExists", query = "select s.id,s.name from Screen s where s.theater=:theaterId and s.name=:name"),
+		@NamedQuery(name = "deleteScreenr", query = " delete from Screen s where id=:screenId") })
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class Screen extends BaseModel {
 
 	/**
@@ -51,9 +52,8 @@ public class Screen extends BaseModel {
 	@JoinColumn(name = "THEATER_ID")
 	private Theater theater;
 
-	@OneToMany(mappedBy = "screen")
-	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST,
-			org.hibernate.annotations.CascadeType.REMOVE })
+	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<SeatClassType> seatClassTypes = new ArrayList<SeatClassType>(0);
 
 	public String getName() {

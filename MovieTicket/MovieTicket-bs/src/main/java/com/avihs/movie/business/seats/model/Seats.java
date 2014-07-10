@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -20,6 +22,7 @@ import com.avihs.movie.business.rows.model.Rows;
 @DynamicUpdate
 @DynamicInsert
 @JsonSerialize(include = Inclusion.NON_NULL)
+@NamedQueries({ @NamedQuery(name = "getScreenSeats", query = "select se from Seats se inner join  se.row inner join se.row.seatClassType inner join se.row.seatClassType.screen where se.row.seatClassType.screen.id=:screenId") })
 public class Seats extends BaseModel {
 
 	/**

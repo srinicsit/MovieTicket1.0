@@ -38,4 +38,9 @@
 		<put-attribute name="body" value="/WEB-INF/jsp/movie_assign.jsp"></put-attribute>
 	</definition>
 
+	<definition name="book_ticket" extends="base.definition">
+		<put-attribute name="title" value="Book Ticket"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/jsp/book_ticket.jsp"></put-attribute>
+	</definition>
+
 </tiles-definitions>

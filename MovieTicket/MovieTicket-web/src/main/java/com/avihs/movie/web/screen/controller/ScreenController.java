@@ -133,21 +133,32 @@ public class ScreenController {
 		if (!bindingResult.hasErrors()) {
 			response.setStatus("SUCCESS");
 			if (screenForm.getScreenId() != null) {
-				Screen screen = new Screen();
+				Screen screen = screenService.loadScreen(screenForm
+						.getScreenId());
 				screen.setName(screenForm.getName());
-				// Theater theater = theaterMgmtService.getTheater(screenForm
-				// .getTheaterId());
 				Theater theater = new Theater();
 				theater.setId(screenForm.getTheaterId());
-				screen.setId(screenForm.getScreenId());
+
 				screen.setTheater(theater);
-				User user = (User) session
-						.getAttribute(Constants.LOGGED_IN_USER);
-				// screen.setModifiedUser(user);
+				// User user = (User) session
+				// .getAttribute(Constants.LOGGED_IN_USER);
+				// // screen.setModifiedUser(user);
 
 				ScreenForm newScreenForm = getNewScreenForm(screenForm);
 				model.addAttribute("screenForm", newScreenForm);
+
+				if (screenForm.getRemovedSeatCls() != null) {
+					List<SeatClassType> seatClassTypes = getJavaObject(screenForm
+							.getRemovedSeatCls());
+
+					for (SeatClassType delSeatClassType : seatClassTypes) {
+						seatClassTypeService.delete(seatClassTypeService
+								.load(delSeatClassType.getId()));
+					}
+				}
+
 				setSeatClassTypes(screenForm, screen);
+
 				screenService.update(screen);
 			}
 		} else {
@@ -172,10 +183,11 @@ public class ScreenController {
 		if (!bindingResult.hasErrors()) {
 			response.setStatus("SUCCESS");
 			if (screenForm.getScreenId() != null) {
-				Screen screen = new Screen();
-				screen.setId(screenForm.getScreenId());
-				//seatClassTypeService.deleteSeatClasses(screenForm.getScreenId());
-				screenService.delete(screen);
+				Screen screen = screenService.loadScreen(screenForm
+						.getScreenId());
+				if (screen != null) {
+					screenService.delete(screen);
+				}
 
 				ScreenForm newScreenForm = getNewScreenForm(screenForm);
 				model.addAttribute("screenForm", newScreenForm);

@@ -42,7 +42,7 @@ fieldset {
 		debugger;
 		initDialog();
 		$('#locations').autocomplete({
-			source : $('#contextPath').val() + "/locations/fullList",
+			source : $('#contextPath').val() + "/locations/partialList",
 			minLength : 1,
 			focus : function(event, ui) {
 				$("#locations").val(ui.item.name);

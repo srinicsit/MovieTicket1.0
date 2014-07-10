@@ -66,6 +66,7 @@ public class MovieController {
 				movie.setHours(movieForm.getHours());
 				movie.setMins(movieForm.getMins());
 				movie.setLanguage(movieForm.getLanguage());
+				movie.setReleaseDate(movieForm.getReleaseDate());
 				movieService.save(movie);
 			}
 		} else {
@@ -90,6 +91,7 @@ public class MovieController {
 				movie.setHours(movieForm.getHours());
 				movie.setMins(movieForm.getMins());
 				movie.setLanguage(movieForm.getLanguage());
+				movie.setReleaseDate(movieForm.getReleaseDate());
 				movieService.update(movie);
 
 			}
@@ -106,10 +108,10 @@ public class MovieController {
 			BindingResult bindingResult) {
 		JsonResponse response = new JsonResponse();
 		if (!bindingResult.hasErrors()) {
-			Movie movie = new Movie();
-			movie.setMovieName(movieForm.getMovieName());
-			movie.setId(movieForm.getMovieId());
-			movieService.delete(movie);
+			Movie movie = movieService.loadMovie(movieForm.getMovieId());
+			if (movie != null) {
+				movieService.delete(movie);
+			}
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(bindingResult.getAllErrors());

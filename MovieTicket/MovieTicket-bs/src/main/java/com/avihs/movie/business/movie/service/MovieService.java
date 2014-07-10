@@ -13,7 +13,8 @@ public interface MovieService {
 	public void update(Movie movie);
 
 	public void delete(Movie movie);
-	
+
+	public Movie loadMovie(Integer movieId);
 
 	public boolean isMovieExists(String movieName);
 

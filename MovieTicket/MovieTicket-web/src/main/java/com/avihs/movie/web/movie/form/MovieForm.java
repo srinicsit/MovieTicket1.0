@@ -1,5 +1,7 @@
 package com.avihs.movie.web.movie.form;
 
+import java.util.Date;
+
 public class MovieForm {
 
 	private Integer movieId;
@@ -11,6 +13,8 @@ public class MovieForm {
 	private Integer mins;
 
 	private String language;
+	
+	private Date releaseDate;
 
 	public Integer getMovieId() {
 		return movieId;
@@ -50,5 +54,13 @@ public class MovieForm {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public Date getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(Date releaseDate) {
+		this.releaseDate = releaseDate;
 	}
 }

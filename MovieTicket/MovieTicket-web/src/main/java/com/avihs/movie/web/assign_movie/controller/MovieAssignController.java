@@ -1,8 +1,7 @@
 package com.avihs.movie.web.assign_movie.controller;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -15,11 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.avihs.movie.business.model.SeatStatus;
 import com.avihs.movie.business.movie.model.Movie;
 import com.avihs.movie.business.movie.service.MovieService;
 import com.avihs.movie.business.movie_screen.model.MovieScreen;
 import com.avihs.movie.business.movie_screen.service.MovieScreenService;
 import com.avihs.movie.business.screen.model.Screen;
+import com.avihs.movie.business.screen.service.ScreenService;
+import com.avihs.movie.business.seats.model.Seats;
+import com.avihs.movie.business.seats_status.model.SeatsStatus;
+import com.avihs.movie.business.seats_status.service.SeatsStatusService;
 import com.avihs.movie.web.assign_movie.form.MovieAssignForm;
 import com.avihs.movie.web.util.DataTableObject;
 import com.avihs.movie.web.util.JsonResponse;
@@ -29,11 +33,18 @@ import com.avihs.movie.web.util.JsonResponse;
 public class MovieAssignController {
 
 	public static final String MOVIE_ASSIGN_PAGE = "assign_movie";
+
 	@Autowired
 	private MovieScreenService movieScreenService;
 
 	@Autowired
 	private MovieService movieService;
+
+	@Autowired
+	ScreenService screenService;
+
+	@Autowired
+	private SeatsStatusService seatsStatusService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String load(ModelMap model) {
@@ -60,8 +71,8 @@ public class MovieAssignController {
 			Movie movie = new Movie();
 			movie.setId(movieAssignForm.getMovieId());
 
-			Screen screen = new Screen();
-			screen.setId(movieAssignForm.getScreenId());
+			Screen screen = screenService.loadScreen(movieAssignForm
+					.getScreenId());
 
 			movieScreen.setMovie(movie);
 			movieScreen.setScreen(screen);
@@ -71,12 +82,29 @@ public class MovieAssignController {
 			movieScreen.setShowMins(movieAssignForm.getMins());
 
 			movieScreenService.save(movieScreen);
+			assignSeatsToMovieScreen(movieScreen, screen);
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(bindingResult.getAllErrors());
 		}
 
 		return response;
+	}
+
+	private void assignSeatsToMovieScreen(MovieScreen movieScreen, Screen screen) {
+
+		List<Seats> seats = screenService.getScreenSeats(screen.getId());
+
+		List<SeatsStatus> seatsStatusList = new ArrayList<SeatsStatus>();
+		for (Seats seat : seats) {
+			SeatsStatus seatsStatus = new SeatsStatus();
+			seatsStatus.setSeatStatus(SeatStatus.AVAILABLE);
+			seatsStatus.setMovieScreen(movieScreen);
+			seatsStatus.setSeat(seat);
+			seatsStatusList.add(seatsStatus);
+		}
+		seatsStatusService.save(seatsStatusList);
+
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -121,9 +149,11 @@ public class MovieAssignController {
 
 		if (!bindingResult.hasErrors()) {
 			response.setStatus("SUCCESS");
-			MovieScreen movieScreen = new MovieScreen();
-			movieScreen.setId(movieAssignForm.getMovieAssignId());
-			movieScreenService.delete(movieScreen);
+			MovieScreen movieScreen = movieScreenService
+					.loadMovieScreen(movieAssignForm.getMovieAssignId());
+			if (movieScreen != null) {
+				movieScreenService.delete(movieScreen);
+			}
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(bindingResult.getAllErrors());
@@ -143,5 +173,6 @@ public class MovieAssignController {
 
 		return dataTableObject;
 	}
+
 
 }

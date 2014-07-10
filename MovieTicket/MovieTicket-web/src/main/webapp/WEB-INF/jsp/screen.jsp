@@ -225,6 +225,7 @@ input.text {
 										$(this).dialog("close");
 										var allSeatsInfo = getAllSeatsInfo();
 										$('#seatsInfo').val(allSeatsInfo);
+										setRemovedClsTypes();
 										submitForm();
 										document.screenForm.action = $(
 												'#contextPath').val()
@@ -293,6 +294,9 @@ input.text {
 				modelAttribute="screenForm" method="post">
 				<form:hidden path="theaterId" id="theaterId" />
 				<form:hidden path="screenId" id="screenId" />
+
+				<form:hidden path="updateSeatClsTypes" id="updateSeatClsTypes" />
+				<form:hidden path="removedSeatCls" id="removedSeatCls" />
 
 				<table>
 					<tr>

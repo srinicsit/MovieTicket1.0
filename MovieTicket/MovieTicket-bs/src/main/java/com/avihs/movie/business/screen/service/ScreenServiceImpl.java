@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.avihs.movie.business.screen.dao.ScreenDao;
 import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.seat_class_type.model.SeatClassType;
+import com.avihs.movie.business.seats.model.Seats;
 
 @Service
 public class ScreenServiceImpl implements ScreenService {
@@ -46,5 +47,17 @@ public class ScreenServiceImpl implements ScreenService {
 	@Override
 	public List<SeatClassType> getClassTypes(Integer screenId) {
 		return screenDao.getClassTypes(screenId);
+	}
+
+	@Transactional
+	@Override
+	public Screen loadScreen(Integer screenId) {
+
+		return screenDao.load(Screen.class, screenId);
+	}
+
+	@Override
+	public List<Seats> getScreenSeats(Integer screenId) {
+		return screenDao.getScreenSeats(screenId);
 	}
 }

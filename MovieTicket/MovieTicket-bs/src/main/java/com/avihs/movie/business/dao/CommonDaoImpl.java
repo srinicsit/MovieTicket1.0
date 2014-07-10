@@ -35,7 +35,6 @@ public class CommonDaoImpl implements CommonDao {
 	@Transactional
 	public <T> void update(T t) {
 		getCurrentSession().update(t);
-
 	}
 
 	@Override
@@ -56,6 +55,9 @@ public class CommonDaoImpl implements CommonDao {
 		return sessionFactory;
 	}
 
-
+	@Override
+	public <T> T load(Class cls, Integer id) {
+		return (T) getCurrentSession().load(cls, id);
+	}
 
 }

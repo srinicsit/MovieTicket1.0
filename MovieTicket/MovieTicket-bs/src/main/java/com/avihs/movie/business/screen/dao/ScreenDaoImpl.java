@@ -3,9 +3,7 @@ package com.avihs.movie.business.screen.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Query;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
@@ -14,17 +12,13 @@ import org.springframework.stereotype.Repository;
 import com.avihs.movie.business.dao.CommonDaoImpl;
 import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.seat_class_type.model.SeatClassType;
+import com.avihs.movie.business.seats.model.Seats;
 import com.avihs.movie.business.theater.model.Theater;
 
 @Repository
 public class ScreenDaoImpl extends CommonDaoImpl implements ScreenDao {
 
 	public List<Screen> getScreens(Integer theaterId) {
-
-		// Query query =
-		// getCurrentSession().getNamedQuery("getScreensForTheater");
-		// query.setInteger("theaterId", theaterId);
-		// return query.list();
 
 		Criteria cr = getCurrentSession()
 				.createCriteria(Screen.class)
@@ -63,14 +57,11 @@ public class ScreenDaoImpl extends CommonDaoImpl implements ScreenDao {
 
 	}
 
-	public void getcls(Integer screenId) {
-		Query query = getCurrentSession()
-				.createQuery(
-						"select sc "
-								+ "from SeatClassType sc "
-								+ "join fetch sc.rowsList r where sc.screen=:screen_id ");
-		query.setInteger("screen_id", screenId);
-		Object data = query.list();
-		System.out.println(data);
+	public List<Seats> getScreenSeats(Integer screenId) {
+
+		Query query = getCurrentSession().getNamedQuery("getScreenSeats");
+		query.setInteger("screenId", screenId);
+		return query.list();
 	}
+
 }

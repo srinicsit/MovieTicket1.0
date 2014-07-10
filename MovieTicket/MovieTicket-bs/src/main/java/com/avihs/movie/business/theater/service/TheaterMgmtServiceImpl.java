@@ -28,6 +28,11 @@ public class TheaterMgmtServiceImpl implements TheaterMgmtService {
 		return theaterMgmtDao.get(Theater.class, id);
 	}
 
+	public Theater loadTheater(Integer id) {
+
+		return theaterMgmtDao.load(Theater.class, id);
+	}
+
 	@Override
 	@Transactional
 	public void create(Theater theater) {

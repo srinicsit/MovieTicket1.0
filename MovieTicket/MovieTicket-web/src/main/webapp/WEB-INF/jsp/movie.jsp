@@ -38,6 +38,7 @@ fieldset {
 			max : 59
 		}); */
 		initDialog();
+		$('#releaseDate').datepicker();
 		var table = $("#movies").DataTable({
 			"dom" : '<"toolbar">frtip',
 			"bProcessing" : true,
@@ -51,6 +52,13 @@ fieldset {
 				"mData" : "movieName"
 			}, {
 				"mData" : "language"
+			}, {
+				"mData" : "releaseDate",
+				"mRender" : function(data, type, row) {
+					if (data) {
+						return getDate(data);
+					}
+				}
 			}, {
 				"mData" : "hours"
 			}, {
@@ -86,7 +94,9 @@ fieldset {
 			var row = table.row('.selected').data();
 			$('#movieId').val(row.id);
 			$('#movieName').val(row.movieName);
-			$('#language').val(row.language)
+			$('#language').val(row.language);
+
+			$('#releaseDate').val(getDate(row.releaseDate));
 
 			$('#hours').val(row.hours);
 			$('#mins').val(row.mins);
@@ -166,6 +176,15 @@ fieldset {
 								} ]
 					});
 		}
+
+		function getDate(data) {
+			var d = new Date(data)
+			var curr_date = d.getDate();
+			var curr_month = d.getMonth();
+			var curr_year = d.getFullYear();
+			var dateString = (curr_month + 1 + "/" + curr_date + "/" + curr_year);
+			return dateString;
+		}
 	});
 </script>
 </head>
@@ -176,6 +195,7 @@ fieldset {
 				<tr>
 					<th>Name</th>
 					<th>Language</th>
+					<th>Release Date</th>
 					<th>Hous</th>
 					<th>Minutes</th>
 					<th>Id</th>
@@ -197,6 +217,10 @@ fieldset {
 				<form:input path="movieName" id="movieName" class="text " />
 				<form:label path="language">Language</form:label>
 				<form:input path="language" id="language" class="text" />
+
+				<form:label path="releaseDate">Release Date</form:label>
+				<form:input path="releaseDate" id="releaseDate" class="text" />
+
 				<form:label path="hours">Hours</form:label>
 				<form:input path="hours" id="hours" class="text " />
 				<form:label path="mins">Minutes</form:label>

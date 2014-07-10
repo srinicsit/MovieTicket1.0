@@ -4,6 +4,7 @@
 var seatsTypeColumnsInfo = {};
 var seatsTypeRowsInfo = {};
 var seatsTypeLabelInfo = {};
+var seatsTypeIdInfo = {};
 
 var rowNumberToCharInfo = {};
 
@@ -263,6 +264,7 @@ function getAllSeatsInfo() {
 	var allSeats = [];
 	var clsTypeInfo;
 	var rowInfo;
+	$('#updateSeatClsTypes').val("true");
 	for (var i = 0; i < imgs.length; i++) {
 
 		var img = $(imgs[i]);
@@ -279,6 +281,7 @@ function getAllSeatsInfo() {
 			clsTypeInfo.seatClsName = clsType;
 			clsTypeInfo.rows = seatsTypeRowsInfo[clsType];
 			clsTypeInfo.cols = seatsTypeColumnsInfo[clsType];
+			clsTypeInfo.id = seatsTypeIdInfo[clsType];
 			clsTypeInfo.rowsList = [];
 			allSeats.push(clsTypeInfo);
 		}
@@ -317,9 +320,34 @@ function getAllSeatsInfo() {
 	screen.seatClassTypes = allSeats;
 	return JSON.stringify(screen);
 }
+function setRemovedClsTypes() {
+	debugger;
 
-function getSeatInfo() {
+	var allSeats = [];
 
+	for (type in seatsTypeIdInfo) {
+
+		if (!isTypeExistInSelection(type)) {
+			var clsTypeInfo = {};
+			clsTypeInfo.id = seatsTypeIdInfo[type];
+			allSeats.push(clsTypeInfo);
+			break;
+		}
+	}
+
+	var screen = {};
+	screen.seatClassTypes = allSeats;
+	$('#removedSeatCls').val(JSON.stringify(screen));
+}
+
+function isTypeExistInSelection(type) {
+	var types = $('#seatsType').val();
+	for (i in types) {
+		if (type == types[i]) {
+			return true;
+		}
+	}
+	return false;
 }
 
 function loadScreenDetails(screenId) {
@@ -329,9 +357,12 @@ function loadScreenDetails(screenId) {
 		for (i in screenData) {
 			var clsType = screenData[i];
 
-			$('#seatsType').val(clsType.seatClsName);
+			// $('#seatsType').val(clsType.seatClsName);
+			$('#seatsType option[value=' + clsType.seatClsName + ']').attr(
+					'selected', 'selected');
 			seatsTypeRowsInfo[clsType.seatClsName] = clsType.rows;
 			seatsTypeColumnsInfo[clsType.seatClsName] = clsType.cols;
+			seatsTypeIdInfo[clsType.seatClsName] = clsType.id;
 
 			for (r in screenData[i].rowsList) {
 
@@ -500,6 +531,7 @@ $(function() {
 	$('#submit').click(function() {
 
 		$('#jsonData').val(getAllSeatsInfo());
+		setRemovedClsTypes();
 	});
 
 	$('#seatsType').change(function() {

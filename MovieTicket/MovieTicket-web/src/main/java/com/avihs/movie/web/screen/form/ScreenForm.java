@@ -14,6 +14,10 @@ public class ScreenForm {
 
 	private String seatsInfo;
 
+	private Boolean updateSeatClsTypes;
+
+	private String removedSeatCls;
+
 	public static final String ROW_NAME = "rowName";
 
 	public static final String ROW = "row";
@@ -70,6 +74,22 @@ public class ScreenForm {
 
 	public void setColumns(Integer columns) {
 		this.columns = columns;
+	}
+
+	public Boolean getUpdateSeatClsTypes() {
+		return updateSeatClsTypes;
+	}
+
+	public void setUpdateSeatClsTypes(Boolean updateSeatClsTypes) {
+		this.updateSeatClsTypes = updateSeatClsTypes;
+	}
+
+	public String getRemovedSeatCls() {
+		return removedSeatCls;
+	}
+
+	public void setRemovedSeatCls(String removedSeatCls) {
+		this.removedSeatCls = removedSeatCls;
 	}
 
 }

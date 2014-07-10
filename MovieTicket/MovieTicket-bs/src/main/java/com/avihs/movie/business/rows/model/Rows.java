@@ -45,9 +45,7 @@ public class Rows extends BaseModel {
 	@JsonIgnore
 	private SeatClassType seatClassType;
 
-	@OneToMany(mappedBy = "row")
-	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST,
-			org.hibernate.annotations.CascadeType.REMOVE })
+	@OneToMany(mappedBy = "row",cascade=CascadeType.ALL)	
 	private List<Seats> seats = new ArrayList<Seats>(0);
 
 	public Integer getRowNum() {

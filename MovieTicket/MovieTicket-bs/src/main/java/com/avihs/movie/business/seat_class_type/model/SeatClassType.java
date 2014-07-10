@@ -16,7 +16,6 @@ import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -50,9 +49,7 @@ public class SeatClassType extends BaseModel {
 	@JsonIgnore
 	private Screen screen;
 
-	@OneToMany(mappedBy = "seatClassType")
-	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST,
-			org.hibernate.annotations.CascadeType.REMOVE })
+	@OneToMany(mappedBy = "seatClassType", cascade = CascadeType.ALL)
 	private List<Rows> rowsList = new ArrayList<Rows>(0);
 
 	public String getSeatClsName() {

@@ -29,6 +29,18 @@ public class SeatClassTypeServiceImpl implements SeatClassTypeService {
 	@Transactional
 	public void deleteSeatClasses(Integer screenId) {
 		seatClassTypeDao.deleteSeatClasses(screenId);
+	}
 
+	@Override
+	public void delete(SeatClassType seatClassType) {
+		if (seatClassType != null) {
+			seatClassTypeDao.delete(seatClassType);
+		}
+
+	}
+
+	@Override
+	public SeatClassType load(Integer seatClassTypeId) {
+		return seatClassTypeDao.load(SeatClassType.class, seatClassTypeId);
 	}
 }

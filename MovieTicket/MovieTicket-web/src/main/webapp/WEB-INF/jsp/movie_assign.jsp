@@ -23,18 +23,6 @@ fieldset {
 	border: 0;
 	margin-top: 25px;
 }
-
-.labelCell {
-	float: left;
-	width: 25%;
-	padding: 5px;
-}
-
-.valueCell {
-	float: left;
-	width: 60%;
-	padding: 5px;
-}
 </style>
 <script src="<c:url value="/resources/js/jquery.dataTables.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.auto.complete.js" />"></script>

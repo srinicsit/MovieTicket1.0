@@ -18,3 +18,21 @@
 	margin: 0;
 	padding: 0.3em;
 }
+
+.labelCell {
+	float: left;
+	width: 25%;
+	padding: 5px;
+}
+
+.valueCell {
+	float: left;
+	width: 60%;
+	padding: 5px;
+}
+
+.tabHeader {
+	float: left;
+	width: 40%;
+	padding: 5px;
+}

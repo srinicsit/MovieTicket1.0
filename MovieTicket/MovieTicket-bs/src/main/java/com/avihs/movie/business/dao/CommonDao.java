@@ -11,7 +11,8 @@ public interface CommonDao {
 	public <T> void update(T t);
 
 	public <T> void delete(T t);
-	
+
+	public <T> T load(Class cls, Integer id);
 
 	public <T> List<T> get(Class cls);
 }

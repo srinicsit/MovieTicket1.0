@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -110,9 +109,11 @@ public class TheaterController {
 		JsonResponse response = new JsonResponse();
 		if (!bindingResult.hasErrors()) {
 			response.setStatus("SUCCESS");
-			Theater theater = new Theater();
-			theater.setId(theaterForm.getTheaterId());
-			theaterMgmtService.delete(theater);
+			Theater theater = theaterMgmtService.loadTheater(theaterForm
+					.getTheaterId());
+			if (theater != null) {
+				theaterMgmtService.delete(theater);
+			}
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(bindingResult.getAllErrors());

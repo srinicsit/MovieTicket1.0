@@ -1,5 +1,6 @@
 package com.avihs.movie.business.movie_screen.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,16 @@ public class MovieScreenServiceImpl implements MovieScreenService {
 	@Override
 	public List<MovieScreen> getMovieScreens(Integer movieId) {
 		return movieScreenDao.getMovieScreens(movieId);
+	}
+
+	@Override
+	public MovieScreen loadMovieScreen(Integer movieScreenId) {
+		return movieScreenDao.load(MovieScreen.class, movieScreenId);
+	}
+
+	@Override
+	public List<MovieScreen> getMovieScreens(Integer movieId,Date showDate) {
+		return movieScreenDao.getMovieScreens(movieId,showDate);
 	}
 
 }

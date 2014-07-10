@@ -1,5 +1,6 @@
 package com.avihs.movie.business.movie_screen.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -18,5 +19,15 @@ public class MovieScreenDaoImpl extends CommonDaoImpl implements MovieScreenDao 
 		List<MovieScreen> movieScreens = query.list();
 
 		return movieScreens;
+	}
+
+	public List<MovieScreen> getMovieScreens(Integer movieId, Date showDate) {
+		Query query = getCurrentSession().getNamedQuery(
+				"getMovieScreensForDate");
+		query.setInteger("movieId", movieId);
+		query.setDate("showDate", showDate);
+		List<MovieScreen> movieScreens = query.list();
+		return movieScreens;
+
 	}
 }

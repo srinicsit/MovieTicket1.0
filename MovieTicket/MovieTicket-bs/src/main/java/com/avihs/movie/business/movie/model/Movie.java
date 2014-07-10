@@ -1,5 +1,7 @@
 package com.avihs.movie.business.movie.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -33,9 +35,25 @@ public class Movie extends BaseModel {
 
 	@Column(name = "MINS")
 	private Integer mins;
-	
+
 	@Column(name = "LANGUAGE")
 	private String language;
+
+	@Column(name = "RELEASE_DATE")
+	private Date releaseDate;
+
+	@Column(name = "DIRECTOR")
+	private String director;
+
+	// Drama, Thriller
+	@Column(name = "GENRE")
+	private String genre;
+
+	@Column(name = "CERTIFICATE")
+	private String certificate;
+
+	@Column(name = "DIMENSION")
+	private String dimension;
 
 	public String getMovieName() {
 		return movieName;
@@ -67,6 +85,46 @@ public class Movie extends BaseModel {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public Date getReleaseDate() {
+		return releaseDate;
+	}
+
+	public void setReleaseDate(Date releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public String getDirector() {
+		return director;
+	}
+
+	public void setDirector(String director) {
+		this.director = director;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	public String getCertificate() {
+		return certificate;
+	}
+
+	public void setCertificate(String certificate) {
+		this.certificate = certificate;
+	}
+
+	public String getDimension() {
+		return dimension;
+	}
+
+	public void setDimension(String dimension) {
+		this.dimension = dimension;
 	}
 
 }

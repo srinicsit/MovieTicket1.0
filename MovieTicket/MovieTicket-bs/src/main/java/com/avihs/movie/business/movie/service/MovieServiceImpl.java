@@ -52,4 +52,10 @@ public class MovieServiceImpl implements MovieService {
 	public boolean isMovieExists(String movieName, Integer movieId) {
 		return movieDao.isMovieExists(movieName, movieId);
 	}
+
+	@Override
+	public Movie loadMovie(Integer movieId) {
+		return movieDao.load(Movie.class, movieId);
+
+	}
 }
