@@ -38,8 +38,10 @@
 		<aspectjweaver-version>1.6.1</aspectjweaver-version>
 		<jstl-version>1.2</jstl-version>
 		<tiles-version>2.1.4</tiles-version>
+		<mail-version>1.4</mail-version>
 		<commons-beanutils-version>1.8.2</commons-beanutils-version>
 		<commons-digester-version>1.8.1</commons-digester-version>
+		<velocity-version>1.6.2</velocity-version>
 	</properties>
 
 	<modules>

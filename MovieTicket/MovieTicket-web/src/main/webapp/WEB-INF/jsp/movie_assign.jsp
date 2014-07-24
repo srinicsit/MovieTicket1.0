@@ -140,20 +140,19 @@ fieldset {
 
 						});
 
-		$('.ui-icon-trash')
-				.click(
-						function() {
-							debugger;
-							var row = table.row('.selected').data();
+		$('.ui-icon-trash').click(
+				function() {
+					debugger;
+					var row = table.row('.selected').data();
 
-							$('#movieAssignId').val(row.id);
-							$('#showDate').val(getDate(row.showDate));
+					$('#movieAssignId').val(row.id);
+					$('#showDate').val(getDate(row.showDate));
 
-							document.movieAssignForm.action = document.movieAssignForm.action
-									+ "/delete";
-							submitForm();
+					document.movieAssignForm.action = $('#contextPath').val()
+							+ "/movieAssign/delete";
+					submitForm();
 
-						});
+				});
 
 		function createLocation(locationId) {
 

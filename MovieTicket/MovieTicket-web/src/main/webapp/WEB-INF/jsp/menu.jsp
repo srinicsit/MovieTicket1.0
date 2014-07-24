@@ -67,6 +67,7 @@
 					<li><a
 						href="${pageContext.servletContext.contextPath}${'/movieAssign'}">Assign
 							Movie</a></li>
+					<li><a href="#">Movie Screen Price</a></li>
 
 					<li><a
 						href="${pageContext.servletContext.contextPath}${'/userLogin?logout=logout'}">Logout</a></li>

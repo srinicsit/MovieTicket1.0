@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.avihs.movie.business.model.BaseModel;
 import com.avihs.movie.business.movie.model.Movie;
+import com.avihs.movie.business.movie_screen_price.model.MovieScreenPrice;
 import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.seats_status.model.SeatsStatus;
 
@@ -53,9 +55,12 @@ public class MovieScreen extends BaseModel {
 	@Column(name = "SHOW_MINS")
 	private Integer showMins;
 
-	@OneToMany(mappedBy = "movieScreen")
+	@OneToMany(mappedBy = "movieScreen", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<SeatsStatus> seatsStatus = new ArrayList<SeatsStatus>(0);
+
+	@OneToMany(mappedBy = "movieScreen", cascade = CascadeType.ALL)
+	private List<MovieScreenPrice> movieScreenPrices = new ArrayList<MovieScreenPrice>();
 
 	public Movie getMovie() {
 		return movie;

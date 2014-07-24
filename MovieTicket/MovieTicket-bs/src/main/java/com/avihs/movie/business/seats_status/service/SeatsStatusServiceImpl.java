@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.avihs.movie.business.model.SeatStatus;
 import com.avihs.movie.business.model.SeatsStatusCount;
@@ -30,6 +31,17 @@ public class SeatsStatusServiceImpl implements SeatsStatusService {
 	@Override
 	public List<SeatsStatus> getSeatsStatus(Integer movieScreenId) {
 		return seatsStatusDao.getSeatsStatus(movieScreenId);
+	}
+
+	@Override
+	@Transactional
+	public void save(SeatsStatus seatsStatus) {
+		seatsStatusDao.save(seatsStatus);
+	}
+
+	@Override
+	public void update(SeatsStatus seatsStatus) {
+		seatsStatusDao.update(seatsStatus);
 	}
 
 }

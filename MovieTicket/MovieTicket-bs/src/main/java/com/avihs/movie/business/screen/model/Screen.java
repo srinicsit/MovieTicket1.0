@@ -53,7 +53,6 @@ public class Screen extends BaseModel {
 	private Theater theater;
 
 	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
-	@JsonIgnore
 	private List<SeatClassType> seatClassTypes = new ArrayList<SeatClassType>(0);
 
 	public String getName() {

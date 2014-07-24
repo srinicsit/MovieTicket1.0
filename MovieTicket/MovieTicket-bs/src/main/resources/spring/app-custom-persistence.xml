@@ -19,7 +19,7 @@
 		http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
 
 	<!-- <tx:annotation-driven /> -->
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	<context:annotation-config />
 	<!-- Scan for Spring beans declared via annotations. -->
 	<context:component-scan base-package="com.avihs.movie.business" />
@@ -112,7 +112,29 @@
 	</bean>
 
 
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="avihs2014@gmail.com" />
+		<property name="password" value="shiva2014" />
 
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="velocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="velocityProperties">
+			<value>
+				resource.loader=class
+				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+			</value>
+		</property>
+	</bean>
 
 	<!-- import configuration for tomcat profile -->
 

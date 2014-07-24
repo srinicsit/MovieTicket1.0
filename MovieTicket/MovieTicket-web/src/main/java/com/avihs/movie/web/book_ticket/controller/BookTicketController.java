@@ -1,5 +1,6 @@
 package com.avihs.movie.web.book_ticket.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -9,28 +10,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.avihs.movie.business.booking_ticket.model.BookingTicket;
+import com.avihs.movie.business.booking_ticket.service.BookingTicketService;
+import com.avihs.movie.business.model.BookingStatus;
 import com.avihs.movie.business.model.SeatStatus;
 import com.avihs.movie.business.model.SeatsStatusCount;
 import com.avihs.movie.business.movie_screen.model.MovieScreen;
 import com.avihs.movie.business.movie_screen.service.MovieScreenService;
 import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.screen.service.ScreenService;
-import com.avihs.movie.business.seat_class_type.model.SeatClassType;
-import com.avihs.movie.business.seats.model.Seats;
 import com.avihs.movie.business.seats_status.model.SeatsStatus;
 import com.avihs.movie.business.seats_status.service.SeatsStatusService;
+import com.avihs.movie.business.transaction.model.Transaction;
+import com.avihs.movie.business.user.model.User;
 import com.avihs.movie.web.assign_movie.form.MovieScreenStatus;
 import com.avihs.movie.web.assign_movie.form.MovieScreenStatus.TimeAndStatusInfo;
 import com.avihs.movie.web.book_ticket.form.BookTicketForm;
+import com.avihs.movie.web.util.Constants;
 import com.avihs.movie.web.util.DataTableObject;
+import com.avihs.movie.web.util.JsonResponse;
 
 @Controller
 @RequestMapping("/bookTicket")
@@ -46,6 +59,11 @@ public class BookTicketController {
 
 	@Autowired
 	private SeatsStatusService seatsStatusService;
+
+	@Autowired
+	BookingTicketService bookingTicketService;
+
+	ObjectMapper mapper = new ObjectMapper();
 
 	String[] weekDays = new String[] { "Sun", "Mon", "Tue", "Wed", "Thu",
 			"Fri", "Sat" };
@@ -71,13 +89,22 @@ public class BookTicketController {
 		for (; today <= maxDays; today++) {
 			Map<String, String> daysMap = new HashMap<String, String>();
 			daysMap.put("day", (today < 10) ? ("0" + today) : today + "");
-			daysMap.put("name", fstTime ? "Today" : weekDays[dayOfWeek - 1]);
+			daysMap.put("name", fstTime ? "Today" : getWeekName(dayOfWeek));
 			daysNameList.add(daysMap);
 			dayOfWeek++;
 			fstTime = false;
 		}
 
 		return daysNameList;
+	}
+
+	private String getWeekName(int dayOfWeek) {
+		if (dayOfWeek > weekDays.length - 1) {
+			dayOfWeek = Math.abs(dayOfWeek - (weekDays.length));
+			return weekDays[dayOfWeek];
+		} else {
+			return weekDays[dayOfWeek];
+		}
 	}
 
 	public @ResponseBody
@@ -143,31 +170,95 @@ public class BookTicketController {
 		return dataTableObject;
 	}
 
-	@RequestMapping(value = "/seats/{movieScreenId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/screenSeats/{movieScreenId}", method = RequestMethod.GET)
 	public @ResponseBody
-	List<SeatsStatus> getSeats(
+	List<SeatsStatus> getScreenSeats(
 			@PathVariable("movieScreenId") Integer movieScreenId) {
-		List<SeatsStatus> seatsStatusList = null;
+
+		List<SeatsStatus> seatsStatusList = seatsStatusService
+				.getSeatsStatus(movieScreenId);
 
 		return seatsStatusList;
 	}
 
-	@RequestMapping(value = "/screenSeats/{movieScreenId}", method = RequestMethod.GET)
-	public @ResponseBody
-	Map<String, Object> getScreenSeats(
-			@PathVariable("movieScreenId") Integer movieScreenId) {
+	// @RequestMapping(value = "/save", method = RequestMethod.POST)
+	// public @ResponseBody
+	// JsonResponse save(@Valid BookTicketForm bookTicketForm,
+	// BindingResult bindingResult, Model model, HttpSession session) {
+	// JsonResponse response = new JsonResponse();
+	//
+	// if (!bindingResult.hasErrors()) {
+	// response.setStatus("SUCCESS");
+	// List<SeatsStatus> seatsStatus = getJavaObject(bookTicketForm
+	// .getBookingSeats());
+	// for (SeatsStatus seat : seatsStatus) {
+	// BookingTicket bookingTicket = new BookingTicket();
+	// bookingTicket.setBookingStatus(BookingStatus.PAYMENT_WAITING);
+	// seat.setSeatStatus(SeatStatus.NOT_AVAILABLE);
+	// bookingTicket.setSeatStatus(seat);
+	// User user = (User) session
+	// .getAttribute(Constants.LOGGED_IN_USER);
+	// bookingTicket.setUser(user);
+	//
+	// seatsStatusService.update(seat);
+	// bookingTicketService.save(bookingTicket);
+	//
+	// }
+	// } else {
+	// response.setStatus("FAIL");
+	// response.setResult(bindingResult.getAllErrors());
+	// }
+	// return response;
+	// }
 
-		Map<String, Object> seatsMap = new HashMap<String, Object>();
-		MovieScreen movieScreen = movieScreenService
-				.loadMovieScreen(movieScreenId);
-		List<SeatClassType> seatClassTypes = screenService
-				.getClassTypes(movieScreen.getScreen().getId());
-		seatsMap.put("seatClassTypes", seatClassTypes);
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+	public String save(@Valid BookTicketForm bookTicketForm,
+			BindingResult bindingResult, Model model, HttpSession session) {
 
-		List<SeatsStatus> seatsStatusList = seatsStatusService
-				.getSeatsStatus(movieScreenId);
-		seatsMap.put("seatsStatusList", seatsStatusList);
+		if (!bindingResult.hasErrors()) {
+			Transaction transaction = new Transaction();
+			List<SeatsStatus> seatsStatus = getJavaObject(bookTicketForm
+					.getBookingSeats());
 
-		return seatsMap;
+			for (SeatsStatus seat : seatsStatus) {
+				BookingTicket bookingTicket = new BookingTicket();
+				bookingTicket.setBookingStatus(BookingStatus.PAYMENT_WAITING);
+				bookingTicket.setTransaction(transaction);
+				seat.setSeatStatus(SeatStatus.NOT_AVAILABLE);
+				bookingTicket.setSeatStatus(seat);
+				User user = (User) session
+						.getAttribute(Constants.LOGGED_IN_USER);
+				bookingTicket.setUser(user);
+
+				seatsStatusService.update(seat);
+				bookingTicketService.save(bookingTicket);
+
+			}
+			return Constants.REDIRECT + "/payment?transactionId="
+					+ transaction.getId();
+		} else {
+			return Constants.REDIRECT + "/payment";
+		}
+
+	}
+
+	private List<SeatsStatus> getJavaObject(String jsonInput) {
+		List<SeatsStatus> result = new ArrayList<SeatsStatus>();
+		try {
+			// we'll be reading instances of MyBean
+			ObjectReader reader = mapper.reader(BookTicketForm.class);
+			// and then do other configuration, if any, and read:
+			BookTicketForm bookTicketForm = reader.readValue(jsonInput);
+			result = bookTicketForm.getSeatsStatus();
+			System.out.println("json result = " + result);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 }
