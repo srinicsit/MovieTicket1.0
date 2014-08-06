@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.avihs.movie.business.model.Certificate;
+import com.avihs.movie.business.model.Language;
 import com.avihs.movie.business.movie.model.Movie;
 import com.avihs.movie.business.movie.service.MovieService;
 import com.avihs.movie.web.movie.form.MovieForm;
@@ -65,7 +67,15 @@ public class MovieController {
 				movie.setMovieName(movieForm.getMovieName());
 				movie.setHours(movieForm.getHours());
 				movie.setMins(movieForm.getMins());
-				movie.setLanguage(movieForm.getLanguage());
+
+				Certificate certificate = new Certificate();
+				certificate.setId(movieForm.getCertificateId());
+				movie.setCertificate(certificate);
+
+				Language language = new Language();
+				language.setId(movieForm.getLanguage());
+				movie.setLanguage(language);
+
 				movie.setReleaseDate(movieForm.getReleaseDate());
 				movieService.save(movie);
 			}
@@ -85,12 +95,19 @@ public class MovieController {
 			if (!movieService.isMovieExists(movieForm.getMovieName(),
 					movieForm.getMovieId())) {
 
-				Movie movie = new Movie();
-				movie.setId(movieForm.getMovieId());
+				Movie movie = movieService.loadMovie(movieForm.getMovieId());
 				movie.setMovieName(movieForm.getMovieName());
 				movie.setHours(movieForm.getHours());
 				movie.setMins(movieForm.getMins());
-				movie.setLanguage(movieForm.getLanguage());
+
+				Certificate certificate = new Certificate();
+				certificate.setId(movieForm.getCertificateId());
+				movie.setCertificate(certificate);
+
+				Language language = new Language();
+				language.setId(movieForm.getLanguage());
+				movie.setLanguage(language);
+
 				movie.setReleaseDate(movieForm.getReleaseDate());
 				movieService.update(movie);
 

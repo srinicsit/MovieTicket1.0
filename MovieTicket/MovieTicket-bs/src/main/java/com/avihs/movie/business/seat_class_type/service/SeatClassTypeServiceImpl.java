@@ -1,5 +1,7 @@
 package com.avihs.movie.business.seat_class_type.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +44,10 @@ public class SeatClassTypeServiceImpl implements SeatClassTypeService {
 	@Override
 	public SeatClassType load(Integer seatClassTypeId) {
 		return seatClassTypeDao.load(SeatClassType.class, seatClassTypeId);
+	}
+
+	@Override
+	public List<SeatClassType> getClassTypesForScreen(Integer screenId) {
+		return seatClassTypeDao.getClassTypesForScreen(screenId);
 	}
 }

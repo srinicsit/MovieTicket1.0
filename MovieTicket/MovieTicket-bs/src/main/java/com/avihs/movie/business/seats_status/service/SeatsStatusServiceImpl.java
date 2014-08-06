@@ -44,4 +44,9 @@ public class SeatsStatusServiceImpl implements SeatsStatusService {
 		seatsStatusDao.update(seatsStatus);
 	}
 
+	@Override
+	public SeatsStatus loadSeatsStatus(Integer seatStautsId) {
+		return seatsStatusDao.load(SeatsStatus.class, seatStautsId);
+	}
+
 }

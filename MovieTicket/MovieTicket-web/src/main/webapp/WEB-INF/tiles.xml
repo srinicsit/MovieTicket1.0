@@ -42,10 +42,16 @@
 		<put-attribute name="title" value="Book Ticket"></put-attribute>
 		<put-attribute name="body" value="/WEB-INF/jsp/book_ticket.jsp"></put-attribute>
 	</definition>
-	
+
 	<definition name="payment_gateway" extends="base.definition">
 		<put-attribute name="title" value="Book Ticket"></put-attribute>
 		<put-attribute name="body" value="/WEB-INF/jsp/payment_gateway.jsp"></put-attribute>
+	</definition>
+
+	<definition name="movie_screen_price" extends="base.definition">
+		<put-attribute name="title" value="Movie Screen Price"></put-attribute>
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/movie_screen_price.jsp"></put-attribute>
 	</definition>
 
 </tiles-definitions>

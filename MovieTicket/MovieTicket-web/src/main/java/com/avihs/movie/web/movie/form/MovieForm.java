@@ -6,14 +6,16 @@ public class MovieForm {
 
 	private Integer movieId;
 
+	private Integer certificateId;
+
 	private String movieName;
 
 	private Integer hours;
 
 	private Integer mins;
 
-	private String language;
-	
+	private Integer language;
+
 	private Date releaseDate;
 
 	public Integer getMovieId() {
@@ -48,11 +50,11 @@ public class MovieForm {
 		this.mins = mins;
 	}
 
-	public String getLanguage() {
+	public Integer getLanguage() {
 		return language;
 	}
 
-	public void setLanguage(String language) {
+	public void setLanguage(Integer language) {
 		this.language = language;
 	}
 
@@ -62,5 +64,13 @@ public class MovieForm {
 
 	public void setReleaseDate(Date releaseDate) {
 		this.releaseDate = releaseDate;
+	}
+
+	public Integer getCertificateId() {
+		return certificateId;
+	}
+
+	public void setCertificateId(Integer certificateId) {
+		this.certificateId = certificateId;
 	}
 }

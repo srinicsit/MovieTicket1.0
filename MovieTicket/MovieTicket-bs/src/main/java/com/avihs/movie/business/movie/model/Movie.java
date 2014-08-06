@@ -4,14 +4,20 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.avihs.movie.business.model.BaseModel;
+import com.avihs.movie.business.model.Certificate;
+import com.avihs.movie.business.model.Language;
 
 @Entity
 @Table(name = "MOVIE")
@@ -20,6 +26,7 @@ import com.avihs.movie.business.model.BaseModel;
 @NamedQueries({
 		@NamedQuery(name = "getMovieId", query = "select m.id from Movie m where m.movieName=:movieName "),
 		@NamedQuery(name = "getMovieIdForUpdate", query = "select m.id from Movie m where m.movieName=:movieName and m.id!=:id") })
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class Movie extends BaseModel {
 
 	/**
@@ -36,8 +43,9 @@ public class Movie extends BaseModel {
 	@Column(name = "MINS")
 	private Integer mins;
 
-	@Column(name = "LANGUAGE")
-	private String language;
+	@JoinColumn(name = "LANGUAGE_ID")
+	@ManyToOne
+	private Language language;
 
 	@Column(name = "RELEASE_DATE")
 	private Date releaseDate;
@@ -49,8 +57,9 @@ public class Movie extends BaseModel {
 	@Column(name = "GENRE")
 	private String genre;
 
-	@Column(name = "CERTIFICATE")
-	private String certificate;
+	@JoinColumn(name = "CERTIFICATE_ID")
+	@ManyToOne
+	private Certificate certificate;
 
 	@Column(name = "DIMENSION")
 	private String dimension;
@@ -79,14 +88,6 @@ public class Movie extends BaseModel {
 		this.mins = mins;
 	}
 
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
 	public Date getReleaseDate() {
 		return releaseDate;
 	}
@@ -111,20 +112,28 @@ public class Movie extends BaseModel {
 		this.genre = genre;
 	}
 
-	public String getCertificate() {
-		return certificate;
-	}
-
-	public void setCertificate(String certificate) {
-		this.certificate = certificate;
-	}
-
 	public String getDimension() {
 		return dimension;
 	}
 
 	public void setDimension(String dimension) {
 		this.dimension = dimension;
+	}
+
+	public Language getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+	public Certificate getCertificate() {
+		return certificate;
+	}
+
+	public void setCertificate(Certificate certificate) {
+		this.certificate = certificate;
 	}
 
 }

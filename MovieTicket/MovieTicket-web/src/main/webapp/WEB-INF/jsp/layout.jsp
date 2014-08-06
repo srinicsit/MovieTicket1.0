@@ -5,10 +5,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link
-	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/jquery-ui-1.10.4.css" />"
+	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/jquery-ui.css" />"
 	rel="stylesheet">
-<script src="<c:url value="/resources/js/jquery-1.10.2.js" />"></script>
-<script src="<c:url value="/resources/js/jquery-ui-1.10.4.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.js" />"></script>
+<script src="<c:url value="/resources/js/jquery-ui.js" />"></script>
 <title><tiles:insertAttribute name="title" ignore="true" /></title>
 
 <style>
@@ -19,6 +19,10 @@ body {
 
 .demoHeaders {
 	margin-top: 2em;
+}
+
+#progressbar .ui-progressbar-value {
+	background-color: #ccc;
 }
 
 #dialog-link {
@@ -54,6 +58,8 @@ body {
 	margin: 0 4px;
 }
 
+
+
 .fakewindowcontain .ui-widget-overlay {
 	position: absolute;
 }
@@ -63,6 +69,38 @@ body {
 	padding: 0.3em;
 }
 </style>
+
+<script>
+	$(function() {
+		$("#progressbar").progressbar({
+			value : false
+		});
+
+		function initDialog() {
+			$("#progressDialog").dialog({
+				autoOpen : false,
+				closeOnEscape : false,
+				resizable : false,
+				modal : true
+
+			});
+		}
+		initDialog();
+		function showProgress() {
+			$('#progressDialog').dialog("open");
+		}
+		function hideProgress() {
+			$('#progressDialog').dialog("close");
+		}
+
+		$(document).ajaxSend(function() {
+			// 			showProgress();
+		});
+		$(document).ajaxComplete(function() {
+			// 			hideProgress();
+		});
+	});
+</script>
 
 </head>
 <body>
@@ -81,6 +119,13 @@ body {
 		<div style="clear: both;">
 			<tiles:insertAttribute name="footer" />
 		</div>
+
+		<div id="progressDialog">
+			<div class="progress-label">Processing...</div>
+			<div id="progressbar"></div>
+		</div>
+
+
 	</div>
 </body>
 </html>

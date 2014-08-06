@@ -4,34 +4,28 @@
 <html>
 <head>
 <link
+	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/custom.css" />"
+	rel="stylesheet" />
+<link
 	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/jquery.dataTables.css" />"
 	rel="stylesheet">
 <script src="<c:url value="/resources/js/jquery.dataTables.js" />"></script>
 <script src="<c:url value="/resources/js/screen-layout.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.auto.complete.js" />"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <style type="text/css">
-label,input {
-	display: block;
-}
-
 input.text {
 	/* margin-bottom: 12px;
 	width: 95%;
 	padding: .4em; */
 	
 }
-
-.ui-autocomplete {
-	max-height: 100px;
-	overflow-y: auto;
-	/* prevent horizontal scrollbar */
-	overflow-x: hidden;
-}
 </style>
 
 <script type="text/javascript">
 	$(function() {
 		var contextPath = $('#contextPath').val();
+		loadSeatTypes();
 		$('#submit').button();
 		$('#layout').button();
 
@@ -162,53 +156,52 @@ input.text {
 		}
 
 		function createLocation(locationId) {
+			var locationSelect = $('#' + locationId);
+			$.get($('#contextPath').val() + "/locations/fullList", function(
+					data) {
+				clearOptions(locationId);
+				for (var i = 0; i < data.length; i++) {
+					var option = $("<option>");
 
-			$('#' + locationId).autocomplete({
-				source : $('#contextPath').val() + "/locations/partialList",
-				minLength : 1,
-				focus : function(event, ui) {
-					$('#' + locationId).val(ui.item.name);
-					return false;
-				},
-				select : function(event, ui) {
-					debugger;
-					$('#locationId').val(ui.item.id)
-					createTheater("theaterName");
-					return false;
+					option.attr('value', data[i].id);
+					option.text(data[i].name);
+					locationSelect.append(option);
 				}
 
-			}).data("ui-autocomplete")._renderItem = function(ul, item) {
-				return $("<li>").append("<a>" + item.name + "</a>")
-						.appendTo(ul);
-			};
+				locationSelect.combobox({
+					select : function(event, ui) {
+						$('#locationId').val($(this).val());
+						createTheater('theaterName');
+					}
+				});
+
+			});
 		}
-
 		function createTheater(theaterId) {
-			$('#' + theaterId).autocomplete(
-					{
-						source : $('#contextPath').val() + "/theater/list/"
-								+ getLocationIdVal(),
-						minLength : 1,
-						focus : function(event, ui) {
-							$("#" + theaterId).val(ui.item.name);
+			$.get($('#contextPath').val() + "/theater/fullList/"
+					+ getLocationIdVal(), function(data) {
+				debugger;
+				clearOptions(theaterId);
+				var theaterSelect = $('#' + theaterId);
+				for (var i = 0; i < data.length; i++) {
+					var option = $("<option>");
+					option.attr('value', data[i].id);
+					option.text(data[i].name);
+					theaterSelect.append(option);
+				}
+				theaterSelect.combobox({
+					select : function(event, ui) {
+						$('#theaterId').val($(this).val());
+						fillDataInTable();
+					}
+				});
 
-							return false;
-						},
-						change : function(event, ui) {
+			});
 
-						},
-						select : function(event, ui) {
-							$("#theaterName").val(ui.item.name);
-							$('#theaterId').val(ui.item.id)
-							$('#hiddenTheaterName').val(ui.item.name)
-							fillDataInTable();
-							return false;
-						}
-					}).data("ui-autocomplete")._renderItem = function(ul, item) {
-
-				return $("<li>").append("<a>" + item.name + "</a>")
-						.appendTo(ul);
-			};
+		}
+		function clearOptions(selectId) {
+			$('#' + selectId + '').find('option').remove().end().append(
+					'<option value="">Select</option>');
 		}
 
 		function initDialog() {
@@ -251,24 +244,27 @@ input.text {
 
 	<div>
 
-		<fieldset>
-			<div>
-				<label for="locations">Location</label>
-			</div>
-			<div>
 
-				<input id="locations" /> <input id="locationId" type="hidden">
-			</div>
+		<div class="labelCell">
+			<label>Location</label>
+		</div>
 
-			<div>
-				<label for="theaterName">Theater</label>
-			</div>
-			<div>
-				<input id="theaterName" class="text" />
-			</div>
+		<div class="valueCell">
+			<select id="locations">
+				<option value=""></option>
+			</select>
+		</div>
+		<input id="locationId" type="hidden">
+
+		<div class="labelCell">
+			<label for="theaterName">Theater</label>
+		</div>
+		<div class="valueCell">
+			<select id="theaterName"><option value=""></option></select>
+		</div>
 
 
-		</fieldset>
+
 		<div>
 			<table id="screensData" class="display">
 				<thead>
@@ -313,6 +309,8 @@ input.text {
 						<td><form:label path="columns">Columns</form:label></td>
 						<td><form:input path="columns" class="text" value="5" /></td>
 					</tr>
+				</table>
+				<table>
 					<tr>
 						<td><label>Seats</label>
 						<td><input type="number" id="seats" value="1" max="10"
@@ -334,20 +332,16 @@ input.text {
 						</td>
 
 					</tr>
-
+				</table>
+				<table>
 					<tr>
-						<td valign="top">Seats Type</td>
-						<td valign="top"><select name="seatsType" id="seatsType"
-							multiple>
-								<option value="balcony">Balcony</option>
-								<option value="first">First Class</option>
-								<option value="gold">Gold Class</option>
-								<option value="silver">Silver Class</option>
-								<option value="bronze">Bronze Class</option>
+						<td>Seats Type</td>
+						<td><select name="seatsType" id="seatsType" multiple>
+
 						</select></td>
 
 						<td><div id='seatsTypeTableInfo'
-								style="height: 100px; overflow: auto; width: 220px">
+								style="height: 100px; overflow: auto; width: 400px">
 								<table id="seatsTypeTable">
 								</table>
 							</div></td>

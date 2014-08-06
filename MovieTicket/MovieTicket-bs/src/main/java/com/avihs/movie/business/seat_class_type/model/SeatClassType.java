@@ -20,6 +20,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.avihs.movie.business.model.BaseModel;
+import com.avihs.movie.business.model.SeatTypes;
 import com.avihs.movie.business.rows.model.Rows;
 import com.avihs.movie.business.screen.model.Screen;
 
@@ -30,13 +31,11 @@ import com.avihs.movie.business.screen.model.Screen;
 @JsonSerialize(include = Inclusion.NON_NULL)
 @NamedQueries({
 		@NamedQuery(name = "getSeatClassTypesForScreen", query = " from SeatClassType sc where sc.screen=:screen_id"),
-		@NamedQuery(name = "delSeatClassTypesForScreen", query = " delete from SeatClassType sc where sc.screen=:screen_id") })
+		@NamedQuery(name = "delSeatClassTypesForScreen", query = " delete from SeatClassType sc where sc.screen=:screen_id"),
+		@NamedQuery(name = "getSeatClassTypeIdsForScreen", query = "select sc.id from SeatClassType sc where sc.screen=:screen_id") })
 public class SeatClassType extends BaseModel {
 
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "SEAT_CLS_NAME")
-	private String seatClsName;
 
 	@Column(name = "ROWS")
 	private Integer rows;
@@ -44,21 +43,20 @@ public class SeatClassType extends BaseModel {
 	@Column(name = "COLS")
 	private Integer cols;
 
+	@Column(name = "TICKET_COST")
+	private Float ticketCost;
+
 	@ManyToOne
-	@JoinColumn(name = "screen_id")
+	@JoinColumn(name = "SCREEN_ID")
 	@JsonIgnore
 	private Screen screen;
 
+	@ManyToOne
+	@JoinColumn(name = "SEAT_TYPES_ID")
+	private SeatTypes seatType;
+
 	@OneToMany(mappedBy = "seatClassType", cascade = CascadeType.ALL)
 	private List<Rows> rowsList = new ArrayList<Rows>(0);
-
-	public String getSeatClsName() {
-		return seatClsName;
-	}
-
-	public void setSeatClsName(String seatClsName) {
-		this.seatClsName = seatClsName;
-	}
 
 	public Integer getRows() {
 		return rows;
@@ -86,6 +84,22 @@ public class SeatClassType extends BaseModel {
 
 	public List<Rows> getRowsList() {
 		return rowsList;
+	}
+
+	public Float getTicketCost() {
+		return ticketCost;
+	}
+
+	public void setTicketCost(Float ticketCost) {
+		this.ticketCost = ticketCost;
+	}
+
+	public SeatTypes getSeatType() {
+		return seatType;
+	}
+
+	public void setSeatType(SeatTypes seatType) {
+		this.seatType = seatType;
 	}
 
 }

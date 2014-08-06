@@ -1,6 +1,10 @@
 package com.avihs.movie.web.assign_movie.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -77,9 +81,12 @@ public class MovieAssignController {
 			movieScreen.setMovie(movie);
 			movieScreen.setScreen(screen);
 
-			movieScreen.setShowDate(movieAssignForm.getShowDate());
-			movieScreen.setShowHours(movieAssignForm.getHours());
-			movieScreen.setShowMins(movieAssignForm.getMins());
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(movieAssignForm.getShowDate());
+			calendar.set(Calendar.HOUR_OF_DAY, movieAssignForm.getHours());
+			calendar.set(Calendar.MINUTE, movieAssignForm.getMins());
+
+			movieScreen.setShowDate(calendar.getTime());
 
 			movieScreenService.save(movieScreen);
 			assignSeatsToMovieScreen(movieScreen, screen);
@@ -128,9 +135,12 @@ public class MovieAssignController {
 				movieScreen.setMovie(movie);
 				movieScreen.setScreen(screen);
 
-				movieScreen.setShowDate(movieAssignForm.getShowDate());
-				movieScreen.setShowHours(movieAssignForm.getHours());
-				movieScreen.setShowMins(movieAssignForm.getMins());
+				Calendar calendar = new GregorianCalendar();
+				calendar.setTime(movieAssignForm.getShowDate());
+				calendar.set(Calendar.HOUR_OF_DAY, movieAssignForm.getHours());
+				calendar.set(Calendar.MINUTE, movieAssignForm.getMins());
+
+				movieScreen.setShowDate(calendar.getTime());
 
 				movieScreenService.update(movieScreen);
 			}
@@ -174,5 +184,20 @@ public class MovieAssignController {
 		return dataTableObject;
 	}
 
+	@RequestMapping(value = "/moviesList/{screenId}", method = RequestMethod.GET)
+	public @ResponseBody
+	List<MovieScreen> getMovies(@PathVariable("screenId") Integer screenId) {
+
+		List<MovieScreen> movieScreens = movieScreenService
+				.getMovieScreensForScreen(screenId);
+		Collections.sort(movieScreens, new Comparator<MovieScreen>() {
+			@Override
+			public int compare(MovieScreen o1, MovieScreen o2) {
+				return o1.getShowDate().compareTo(o2.getShowDate());
+			}
+		});
+
+		return movieScreens;
+	}
 
 }

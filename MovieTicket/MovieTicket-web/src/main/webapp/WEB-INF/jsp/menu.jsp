@@ -9,6 +9,10 @@
 	position: absolute;
 	width: 100px;
 }
+
+a:link {
+	text-decoration: none;
+}
 </style>
 
 <script>
@@ -67,7 +71,9 @@
 					<li><a
 						href="${pageContext.servletContext.contextPath}${'/movieAssign'}">Assign
 							Movie</a></li>
-					<li><a href="#">Movie Screen Price</a></li>
+					<li><a
+						href="${pageContext.servletContext.contextPath}${'/movieScreenPrice'}">Movie
+							Screen Price</a></li>
 
 					<li><a
 						href="${pageContext.servletContext.contextPath}${'/userLogin?logout=logout'}">Logout</a></li>

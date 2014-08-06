@@ -8,27 +8,21 @@
 <link
 	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/jquery.dataTables.css" />"
 	rel="stylesheet" />
+<link
+	href="<c:url value="/resources/theme/ui-light-ness/css/ui-lightness/custom.css" />"
+	rel="stylesheet" />
 <style type="text/css">
-label,input {
-	display: block;
-}
-
-input.text {
-	margin-bottom: 12px;
-	width: 95%;
-	padding: .4em;
-}
-
-fieldset {
-	padding: 0;
-	border: 0;
-	margin-top: 25px;
+.overflow {
+	height: 100px;
 }
 </style>
 <script src="<c:url value="/resources/js/jquery.dataTables.js" />"></script>
 <script type="text/javascript">
+	var languageTypes = {};
+	var certificateTypes = {};
 	$(function() {
 		var contextPath = $('#contextPath').val();
+
 		/* $('#hours').spinner({
 			min : 0,
 			max : 23
@@ -46,12 +40,17 @@ fieldset {
 			"bServerSide" : false,
 			searching : false,
 			ordering : false,
-			"sAjaxSource" : contextPath + "/movies/listForDt",
 			"bJQueryUI" : true,
 			"aoColumns" : [ {
 				"mData" : "movieName"
 			}, {
-				"mData" : "language"
+				"mData" : "language",
+				"mRender" : function(data, type, row) {
+
+					if (data) {
+						return languageTypes[data.id];
+					}
+				}
 			}, {
 				"mData" : "releaseDate",
 				"mRender" : function(data, type, row) {
@@ -60,16 +59,28 @@ fieldset {
 					}
 				}
 			}, {
-				"mData" : "hours"
+				"mData" : "hours",
+				"mRender" : function(data, type, row) {
+
+					if (data) {
+						return data + ":" + row.mins;
+					}
+				}
 			}, {
-				"mData" : "mins"
+				"mData" : "certificate",
+				"mRender" : function(data, type, row) {
+					debugger;
+					if (data) {
+						return certificateTypes[data.id];
+					}
+				}
 			}, {
 				"mData" : "id"
 			}
 
 			],
 			"columnDefs" : [ {
-				"targets" : [ 4 ],
+				"targets" : [ 5 ],
 				"visible" : false,
 				"searchable" : false
 			} ]
@@ -90,16 +101,21 @@ fieldset {
 		});
 
 		$('.ui-icon-pencil').click(function() {
-			debugger;
 			var row = table.row('.selected').data();
 			$('#movieId').val(row.id);
 			$('#movieName').val(row.movieName);
-			$('#language').val(row.language);
+			$('#language').val(row.language.id);
+			$('#certificateId').val(row.certificate.id);
 
 			$('#releaseDate').val(getDate(row.releaseDate));
 
 			$('#hours').val(row.hours);
 			$('#mins').val(row.mins);
+
+			$('#language').selectmenu("refresh");
+			$('#hours').selectmenu("refresh");
+			$('#mins').selectmenu("refresh");
+			$('#certificateId').selectmenu("refresh");
 
 			document.movieForm.action = document.movieForm.action + "/update";
 			$("#dialog").dialog("open");
@@ -125,27 +141,9 @@ fieldset {
 				url : document.movieForm.action,
 				data : $("form").serialize(),
 				success : function(data) {
-					debugger;
 					fillDataInTable();
-
 				}
 			})
-		}
-
-		function fillDataInTable() {
-
-			$.ajax({
-				type : "GET",
-				url : $('#contextPath').val() + "/movies/listForDt",
-				success : function(data) {
-					debugger;
-					table.clear();
-					table.rows.add(data.aaData);
-					table.draw();
-
-				}
-
-			});
 		}
 
 		function initDialog() {
@@ -154,6 +152,7 @@ fieldset {
 						modal : true,
 						autoOpen : false,
 						width : 400,
+						height : 350,
 						buttons : [
 								{
 									text : "Ok",
@@ -177,6 +176,53 @@ fieldset {
 					});
 		}
 
+		var langagesType = $('#language');
+		$.get(contextPath + "/utils/allLanguages", function(data) {
+			for (var i = 0; i < data.length; i++) {
+
+				var option = $('<option>');
+				option.attr('value', data[i].id);
+				option.text(data[i].name);
+				langagesType.append(option);
+
+				languageTypes[data[i].id] = data[i].name;
+			}
+			langagesType.selectmenu("refresh");
+			getAllCertificates();
+		});
+
+		function getAllCertificates() {
+			var certificatesType = $('#certificateId');
+			$.get(contextPath + "/utils/allCertificates", function(data) {
+				for (var i = 0; i < data.length; i++) {
+
+					var option = $('<option>');
+					option.attr('value', data[i].id);
+					option.text(data[i].code);
+					certificatesType.append(option);
+
+					certificateTypes[data[i].id] = data[i].code;
+				}
+				certificatesType.selectmenu("refresh");
+				fillDataInTable();
+			});
+		}
+
+		function fillDataInTable() {
+
+			$.ajax({
+				type : "GET",
+				url : $('#contextPath').val() + "/movies/listForDt",
+				success : function(data) {
+					debugger;
+					table.clear();
+					table.rows.add(data.aaData);
+					table.draw();
+
+				}
+
+			});
+		}
 		function getDate(data) {
 			var d = new Date(data)
 			var curr_date = d.getDate();
@@ -185,6 +231,40 @@ fieldset {
 			var dateString = (curr_month + 1 + "/" + curr_date + "/" + curr_year);
 			return dateString;
 		}
+
+		function createHoursOption(id) {
+
+			var hoursSelect = $('#' + id);
+			for (var i = 0; i < 24; i++) {
+				var option = $("<option>");
+				option.attr('value', i);
+				if (i < 10) {
+					option.text("0" + i);
+				} else {
+					option.text(i);
+				}
+				hoursSelect.append(option);
+			}
+		}
+		function createMinsOption(id) {
+			var minsSelect = $('#' + id);
+			for (var i = 0; i < 60; i++) {
+				var option = $("<option>");
+				option.attr('value', i);
+				if (i < 10) {
+					option.text("0" + i);
+				} else {
+					option.text(i);
+				}
+				minsSelect.append(option);
+			}
+		}
+		createHoursOption('hours');
+		createMinsOption('mins');
+		$('#hours').selectmenu().selectmenu("menuWidget").addClass("overflow");
+		$('#mins').selectmenu().selectmenu("menuWidget").addClass("overflow");
+		$('#language').selectmenu();
+		$('#certificateId').selectmenu();
 	});
 </script>
 </head>
@@ -196,8 +276,8 @@ fieldset {
 					<th>Name</th>
 					<th>Language</th>
 					<th>Release Date</th>
-					<th>Hous</th>
-					<th>Minutes</th>
+					<th>Duration</th>
+					<th>Certificate</th>
 					<th>Id</th>
 				</tr>
 			</thead>
@@ -212,23 +292,65 @@ fieldset {
 			action="${pageContext.servletContext.contextPath}${'/movies'}"
 			modelAttribute="movieForm" method="post">
 
-			<fieldset>
-				<form:label path="movieName">Name</form:label>
-				<form:input path="movieName" id="movieName" class="text " />
-				<form:label path="language">Language</form:label>
-				<form:input path="language" id="language" class="text" />
+			<div>
+				<div class="labelCell">
+					<form:label path="movieName">Name</form:label>
+				</div>
+				<div class="valueCell">
+					<form:input path="movieName" id="movieName" class="text " />
+				</div>
+			</div>
 
-				<form:label path="releaseDate">Release Date</form:label>
-				<form:input path="releaseDate" id="releaseDate" class="text" />
+			<div>
+				<div class="labelCell">
+					<form:label path="language">Language</form:label>
+				</div>
+				<div class="valueCell">
+					<form:select path="language" id="language" class="text"
+						cssStyle="width:110px;">
+						<option value="">Select</option>
+					</form:select>
+				</div>
+			</div>
 
-				<form:label path="hours">Hours</form:label>
-				<form:input path="hours" id="hours" class="text " />
-				<form:label path="mins">Minutes</form:label>
-				<form:input path="mins" id="mins" class="text " />
+			<div>
+				<div class="labelCell">
+					<form:label path="certificateId">Certificate</form:label>
+				</div>
+				<div class="valueCell">
+					<form:select path="certificateId" id="certificateId" class="text"
+						cssStyle="width:110px;">
+						<option value="">Select</option>
+					</form:select>
+				</div>
+			</div>
+
+			<div>
+				<div class="labelCell">
+					<form:label path="releaseDate">Release Date</form:label>
+				</div>
+				<div class="valueCell">
+					<form:input path="releaseDate" id="releaseDate" class="text" />
+				</div>
+			</div>
+
+			<div>
+				<div class="labelCell">
+					<form:label path="hours">Duration</form:label>
+				</div>
+				<div class="valueCell">
+					<form:select path="hours" id="hours" cssStyle="width:80px;">
+						<option value="">Hours</option>
+					</form:select>
+					&nbsp;
+					<form:select path="mins" id="mins" cssStyle="width:80px;">
+						<option value="">Minutes</option>
+					</form:select>
+				</div>
+			</div>
 
 
-				<form:hidden id="movieId" path="movieId"></form:hidden>
-			</fieldset>
+			<form:hidden id="movieId" path="movieId"></form:hidden>
 		</form:form>
 
 	</div>

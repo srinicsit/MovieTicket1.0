@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -52,7 +53,7 @@ public class Screen extends BaseModel {
 	@JoinColumn(name = "THEATER_ID")
 	private Theater theater;
 
-	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "screen", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<SeatClassType> seatClassTypes = new ArrayList<SeatClassType>(0);
 
 	public String getName() {

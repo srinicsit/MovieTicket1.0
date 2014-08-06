@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -30,7 +32,9 @@ import com.avihs.movie.business.seats_status.model.SeatsStatus;
 @DynamicInsert
 @NamedQueries({
 		@NamedQuery(name = "getMovieScreens", query = "from MovieScreen where movie=:movieId"),
-		@NamedQuery(name = "getMovieScreensForDate", query = "from MovieScreen ms where ms.showDate=:showDate and ms.movie.id=:movieId") })
+		@NamedQuery(name = "getMoviesForScreen", query = "from MovieScreen where screen=:screenId and showDate>=CURRENT_DATE()"),
+		@NamedQuery(name = "getMovieScreensForDate", query = "from MovieScreen ms where  ms.showDate between :startDate and :endDate and ms.movie.id=:movieId") })
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class MovieScreen extends BaseModel {
 
 	/**
@@ -44,16 +48,11 @@ public class MovieScreen extends BaseModel {
 
 	@JoinColumn(name = "SCREEN_ID")
 	@ManyToOne
+	// @JsonIgnore
 	private Screen screen;
 
 	@Column(name = "SHOW_DATE")
 	private Date showDate;
-
-	@Column(name = "SHOW_HOURS")
-	private Integer showHours;
-
-	@Column(name = "SHOW_MINS")
-	private Integer showMins;
 
 	@OneToMany(mappedBy = "movieScreen", cascade = CascadeType.ALL)
 	@JsonIgnore
@@ -86,24 +85,12 @@ public class MovieScreen extends BaseModel {
 		this.showDate = showDate;
 	}
 
-	public Integer getShowHours() {
-		return showHours;
-	}
-
-	public void setShowHours(Integer showHours) {
-		this.showHours = showHours;
-	}
-
-	public Integer getShowMins() {
-		return showMins;
-	}
-
-	public void setShowMins(Integer showMins) {
-		this.showMins = showMins;
-	}
-
 	public List<SeatsStatus> getSeatsStatus() {
 		return seatsStatus;
+	}
+
+	public List<MovieScreenPrice> getMovieScreenPrices() {
+		return movieScreenPrices;
 	}
 
 }

@@ -17,6 +17,8 @@ public interface MovieScreenService {
 
 	public List<MovieScreen> getMovieScreens(Integer movieId);
 
+	public List<MovieScreen> getMovieScreensForScreen(Integer screenId);
+
 	public List<MovieScreen> getMovieScreens(Integer movieId, Date showDate);
 
 }

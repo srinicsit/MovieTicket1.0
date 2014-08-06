@@ -39,26 +39,30 @@ fieldset {
 <script src="<c:url value="/resources/js/jquery.auto.complete.js" />"></script>
 <script type="text/javascript">
 	$(function() {
-		debugger;
 		initDialog();
-		$('#locations').autocomplete({
-			source : $('#contextPath').val() + "/locations/partialList",
-			minLength : 1,
-			focus : function(event, ui) {
-				$("#locations").val(ui.item.name);
-				return false;
-			},
-			select : function(event, ui) {
 
-				$('#locationId').val(ui.item.id)
-				fillDataInTable();
-				return false;
+		var locationSelect = $('#locations');
+		$.get($('#contextPath').val() + "/locations/fullList", function(data) {
+			debugger;
+			for (var i = 0; i < data.length; i++) {
+				var option = $("<option>");
+
+				option.attr('value', data[i].id);
+				option.text(data[i].name);
+				locationSelect.append(option);
 			}
 
-		}).data("ui-autocomplete")._renderItem = function(ul, item) {
+			locationSelect.combobox({
+				select : function(event, ui) {
+					debugger;
 
-			return $("<li>").append("<a>" + item.name + "</a>").appendTo(ul);
-		};
+					$('#locationId').val($(this).val());
+					fillDataInTable();
+					return false;
+				}
+			});
+
+		});
 
 		var contextPath = $('#contextPath').val();
 		//<"top"i>rt<"bottom"flp><"clear">
@@ -209,12 +213,9 @@ fieldset {
 
 
 	<div class="labelCell">
-		<div>
-			<label>Location</label>
-		</div>
-		<div>
-			<input type="text" id="locations" />
-		</div>
+		<label>Location</label> <select id="locations">
+			<option value=""></option>
+		</select>
 	</div>
 
 	<div>
@@ -252,7 +253,5 @@ fieldset {
 		</form:form>
 
 	</div>
-
-
 </body>
 </html>

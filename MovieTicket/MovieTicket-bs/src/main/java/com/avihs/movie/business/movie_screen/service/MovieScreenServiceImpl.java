@@ -49,4 +49,9 @@ public class MovieScreenServiceImpl implements MovieScreenService {
 		return movieScreenDao.getMovieScreens(movieId,showDate);
 	}
 
+	@Override
+	public List<MovieScreen> getMovieScreensForScreen(Integer screenId) {
+		 return movieScreenDao.getMovieScreensForScreen(screenId);
+	}
+
 }

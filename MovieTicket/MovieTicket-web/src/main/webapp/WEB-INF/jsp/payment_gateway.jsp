@@ -24,8 +24,60 @@
 		action="${pageContext.servletContext.contextPath}${'/payment'}"
 		method="post">
 		<form:hidden path="transactionId" />
-		<h3>Welcome to Payment gatway</h3>
-		<form:button id="submit">Submit</form:button>
+
+		<div>
+			<div class="labelCell">
+				<form:label path="creditCardNumer">Credit Card Number</form:label>
+			</div>
+
+			<div class="valueCell">
+				<form:input path="creditCardNumer" id="creditCardNumer" />
+			</div>
+		</div>
+
+		<div>
+			<div class="labelCell">
+				<form:label path="ccv">CCV</form:label>
+			</div>
+
+			<div class="valueCell">
+				<form:input path="ccv" id="ccv" />
+			</div>
+		</div>
+		<div>
+			<div class="labelCell">
+				<label>Expire Date</label>
+			</div>
+
+			<div class="valueCell">
+				<form:select path="expMonth" id="expMonth">
+					<option value="">Select</option>
+				</form:select>
+				&nbsp;
+				<form:select path="expYear" id="expYear">
+					<option value="">Select</option>
+				</form:select>
+			</div>
+		</div>
+
+		<div>
+			<div class="labelCell">
+				<form:label path="nameOnCC">Name</form:label>
+			</div>
+
+			<div class="valueCell">
+				<form:input path="nameOnCC" id="nameOnCC" />
+			</div>
+		</div>
+
+		<div>
+			<div class="labelCell"></div>
+
+			<div class="valueCell">
+				<form:button id="submit">Submit</form:button>
+			</div>
+		</div>
+
 	</form:form>
 </body>
 </html>

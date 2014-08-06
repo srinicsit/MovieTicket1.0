@@ -17,4 +17,6 @@ public interface SeatsStatusService {
 			SeatStatus seatsStatus);
 
 	public List<SeatsStatus> getSeatsStatus(Integer movieScreenId);
+	
+	public SeatsStatus loadSeatsStatus(Integer seatStautsId);
 }

@@ -22,7 +22,10 @@ import com.avihs.movie.business.seats.model.Seats;
 @DynamicUpdate
 @DynamicInsert
 @NamedQueries({
-		@NamedQuery(name = "getSeatsStatusCount", query = "select count(seatsStatus.seat.row.seatClassType) as count,seatsStatus.seat.row.seatClassType.seatClsName as classType from SeatsStatus seatsStatus inner join seatsStatus.seat inner join seatsStatus.seat.row inner join seatsStatus.seat.row.seatClassType  where seatsStatus.movieScreen=:movieScreenId and seatsStatus.seatStatus =:seatStatus group by seatsStatus.seat.row.seatClassType"),
+		@NamedQuery(name = "getSeatsStatusCount", query = "select count(seatsStatus.seat.row.seatClassType) as count,seatsStatus.seat.row.seatClassType.seatType.name as classType,"
+				+ "seatsStatus.seat.row.seatClassType.seatType.id as classTypeId from "
+				+ "SeatsStatus seatsStatus inner join seatsStatus.seat inner join seatsStatus.seat.row inner join seatsStatus.seat.row.seatClassType  "
+				+ "where seatsStatus.seat.status='show' and seatsStatus.movieScreen=:movieScreenId and seatsStatus.seatStatus =:seatStatus group by seatsStatus.seat.row.seatClassType"),
 		@NamedQuery(name = "getMovieScreenSeats", query = "from SeatsStatus ss where movieScreen=:movieScreenId") })
 public class SeatsStatus extends BaseModel {
 

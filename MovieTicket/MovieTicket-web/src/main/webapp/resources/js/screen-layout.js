@@ -3,6 +3,8 @@
  */
 var seatsTypeColumnsInfo = {};
 var seatsTypeRowsInfo = {};
+var seatsTypeCostInfo = {};
+
 var seatsTypeLabelInfo = {};
 var seatsTypeIdInfo = {};
 
@@ -14,12 +16,6 @@ var rowsInfo = [];
 
 var rowNamesToClsType = {};
 
-seatsTypeLabelInfo.balcony = "Balcony";
-seatsTypeLabelInfo.gold = "Gold Class";
-seatsTypeLabelInfo.first = "First Class";
-seatsTypeLabelInfo.silver = "Silver Class";
-seatsTypeLabelInfo.bronze = "Bronze Class";
-
 var seatsInfo = {};
 
 var SEPERATOR = "_";
@@ -28,9 +24,25 @@ function setRowsForSeatType(seatType, noofRowsId) {
 	seatsTypeRowsInfo[seatType] = $('#' + noofRowsId).val();
 }
 function setColsForSeatType(seatType, noofColssId) {
-
 	seatsTypeColumnsInfo[seatType] = $('#' + noofColssId).val();
+}
+function setCostForSeatType(seatType, costId) {
+	seatsTypeCostInfo[seatType] = $('#' + costId).val();
+}
 
+function loadSeatTypes() {
+
+	var contextPath = $('#contextPath').val();
+	var seatsType = $('#seatsType');
+	$.get(contextPath + "/utils/allSeatTypes", function(data) {
+		for (var i = 0; i < data.length; i++) {
+			seatsTypeLabelInfo[data[i].id] = data[i].name;
+			var option = $('<option>');
+			option.attr('value', data[i].id);
+			option.text(data[i].name);
+			seatsType.append(option);
+		}
+	});
 }
 
 function changeSeat(obj) {
@@ -245,7 +257,7 @@ function getRowsForClsType(clsType, totalRows, totalCols, tableId) {
 function getClsType(clsTypes, clsTypeName) {
 
 	for (var i = 0; i < clsTypes.length; i++) {
-		if (clsTypes[i].seatClsName == clsTypeName) {
+		if (clsTypes[i].seatType.id == clsTypeName) {
 			return clsTypes[i]
 		}
 	}
@@ -278,9 +290,12 @@ function getAllSeatsInfo() {
 		clsTypeInfo = getClsType(allSeats, clsType);
 		if (clsTypeInfo == undefined) {
 			clsTypeInfo = {};
-			clsTypeInfo.seatClsName = clsType;
+			clsTypeInfo.seatType = {
+				"id" : clsType
+			};
 			clsTypeInfo.rows = seatsTypeRowsInfo[clsType];
 			clsTypeInfo.cols = seatsTypeColumnsInfo[clsType];
+			clsTypeInfo.ticketCost = seatsTypeCostInfo[clsType];
 			clsTypeInfo.id = seatsTypeIdInfo[clsType];
 			clsTypeInfo.rowsList = [];
 			allSeats.push(clsTypeInfo);
@@ -358,11 +373,12 @@ function loadScreenDetails(screenId) {
 			var clsType = screenData[i];
 
 			// $('#seatsType').val(clsType.seatClsName);
-			$('#seatsType option[value=' + clsType.seatClsName + ']').attr(
+			$('#seatsType option[value=' + clsType.seatType.id + ']').attr(
 					'selected', 'selected');
-			seatsTypeRowsInfo[clsType.seatClsName] = clsType.rows;
-			seatsTypeColumnsInfo[clsType.seatClsName] = clsType.cols;
-			seatsTypeIdInfo[clsType.seatClsName] = clsType.id;
+			seatsTypeRowsInfo[clsType.seatType.id] = clsType.rows;
+			seatsTypeColumnsInfo[clsType.seatType.id] = clsType.cols;
+			seatsTypeCostInfo[clsType.seatType.id] = clsType.ticketCost;
+			seatsTypeIdInfo[clsType.seatType.id] = clsType.id;
 
 			for (r in screenData[i].rowsList) {
 
@@ -375,7 +391,7 @@ function loadScreenDetails(screenId) {
 					seatData.status = seat.status;
 					seatData.id = seat.id;
 
-					var seatId = clsType.seatClsName + SEPERATOR + row.rowNum
+					var seatId = clsType.seatType.id + SEPERATOR + row.rowNum
 							+ SEPERATOR + seat.colNum;
 
 					seatsInfo[seatId] = seatData;
@@ -423,8 +439,6 @@ function onSeatTypeChange() {
 				"onblur",
 				'javascript:setRowsForSeatType("' + values[i] + '","' + id
 						+ '")');
-		var label = $('<label>');
-		$(label).text("Rows");
 
 		// tdSeatTypeRows.append($(label));
 		tdSeatTypeRows.append(rowsInput);
@@ -434,15 +448,35 @@ function onSeatTypeChange() {
 		colsInput.val(seatsTypeColumnsInfo[values[i]]);
 		colsInput.attr("onblur", 'javascript:setColsForSeatType("' + values[i]
 				+ '","' + colsId + '")');
-		var colsLabel = $('<label>');
-		$(colsLabel).text("Columns");
+
+		var ticketCost = $('<input type="text" style="width:70px">');
+		var costId = values[i] + "_" + "Cost";
+		ticketCost.attr('id', costId);
+		ticketCost.val(seatsTypeCostInfo[values[i]]);
+		ticketCost.attr("onblur", 'javascript:setCostForSeatType("' + values[i]
+				+ '","' + costId + '")');
 
 		// tdCols.append(colsLabel);
 		tdCols.append(colsInput);
 
 		row.append(tdSeatType);
 		row.append(tdSeatTypeRows);
+		var rowsLabelTdtd = $("<td>");
+		rowsLabelTdtd.text("Rows");
+		row.append(rowsLabelTdtd);
 		row.append(tdCols);
+		var colsLabelTdtd = $("<td>");
+		colsLabelTdtd.text("Columns");
+		row.append(colsLabelTdtd);
+
+		var ticketTd = $('<td>');
+		ticketTd.append(ticketCost);
+		row.append(ticketTd);
+
+		var ticketTdLabel = $('<td>');
+		ticketTdLabel.text("Cost");
+		row.append(ticketTdLabel);
+
 		seatsTypeTable.append(row);
 	}
 	seatsTypeRowsInfo = newSeatsTypsAndRowsInfo;

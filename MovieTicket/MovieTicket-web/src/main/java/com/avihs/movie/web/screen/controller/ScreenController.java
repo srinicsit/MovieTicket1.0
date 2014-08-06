@@ -245,6 +245,14 @@ public class ScreenController {
 		return seatClassTypes;
 	}
 
+	@RequestMapping(value = "/clsTypeIds/{screenId}", method = RequestMethod.GET)
+	public @ResponseBody
+	List<SeatClassType> getClassTypeIds(@PathVariable("screenId") Integer screenId) {
+		List<SeatClassType> seatClassTypes = seatClassTypeService
+				.getClassTypesForScreen(screenId);
+		return seatClassTypes;
+	}
+
 	private List<SeatClassType> getJavaObject(String jsonInput) {
 		Screen result = null;
 		try {

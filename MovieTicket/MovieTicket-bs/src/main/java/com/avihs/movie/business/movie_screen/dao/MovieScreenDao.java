@@ -11,4 +11,6 @@ public interface MovieScreenDao extends CommonDao {
 	public List<MovieScreen> getMovieScreens(Integer movieId);
 
 	public List<MovieScreen> getMovieScreens(Integer movieId, Date showDate);
+
+	public List<MovieScreen> getMovieScreensForScreen(Integer screenId);
 }

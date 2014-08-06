@@ -1,11 +1,13 @@
 package com.avihs.movie.web.book_ticket.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +34,10 @@ import com.avihs.movie.business.model.SeatStatus;
 import com.avihs.movie.business.model.SeatsStatusCount;
 import com.avihs.movie.business.movie_screen.model.MovieScreen;
 import com.avihs.movie.business.movie_screen.service.MovieScreenService;
+import com.avihs.movie.business.movie_screen_price.model.MovieScreenPrice;
 import com.avihs.movie.business.screen.model.Screen;
 import com.avihs.movie.business.screen.service.ScreenService;
+import com.avihs.movie.business.seat_class_type.model.SeatClassType;
 import com.avihs.movie.business.seats_status.model.SeatsStatus;
 import com.avihs.movie.business.seats_status.service.SeatsStatusService;
 import com.avihs.movie.business.transaction.model.Transaction;
@@ -43,11 +47,16 @@ import com.avihs.movie.web.assign_movie.form.MovieScreenStatus.TimeAndStatusInfo
 import com.avihs.movie.web.book_ticket.form.BookTicketForm;
 import com.avihs.movie.web.util.Constants;
 import com.avihs.movie.web.util.DataTableObject;
-import com.avihs.movie.web.util.JsonResponse;
 
 @Controller
 @RequestMapping("/bookTicket")
 public class BookTicketController {
+
+	private static SimpleDateFormat dtWithWeekdayFormater = new SimpleDateFormat(
+			"EEEE, d MMM");
+	private static SimpleDateFormat threeLetterWeekFormater = new SimpleDateFormat(
+			"EEE ");
+	private static SimpleDateFormat dayFormater = new SimpleDateFormat("dd");
 
 	private static final String BOOK_TICKET_PAGE = "book_ticket";
 
@@ -65,8 +74,7 @@ public class BookTicketController {
 
 	ObjectMapper mapper = new ObjectMapper();
 
-	String[] weekDays = new String[] { "Sun", "Mon", "Tue", "Wed", "Thu",
-			"Fri", "Sat" };
+	private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String load(Model model) {
@@ -77,34 +85,28 @@ public class BookTicketController {
 
 	@RequestMapping(value = "/days", method = RequestMethod.GET)
 	public @ResponseBody
-	List<Map<String, String>> getDays() {
+	List<Map<String, Object>> getDays() {
+		Calendar calendar = new GregorianCalendar();
 
-		Calendar calendar = Calendar.getInstance();
-		int today = calendar.get(Calendar.DAY_OF_MONTH);
-		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH);
-		int maxDays = today + 5;
-		List<Map<String, String>> daysNameList = new ArrayList<Map<String, String>>(
+		List<Map<String, Object>> daysNameList = new ArrayList<Map<String, Object>>(
 				5);
-		boolean fstTime = true;
-		for (; today <= maxDays; today++) {
-			Map<String, String> daysMap = new HashMap<String, String>();
-			daysMap.put("day", (today < 10) ? ("0" + today) : today + "");
-			daysMap.put("name", fstTime ? "Today" : getWeekName(dayOfWeek));
+
+		for (int i = 0; i < 6; i++) {
+
+			Map<String, Object> daysMap = new HashMap<String, Object>();
+			Date date = calendar.getTime();
+			daysMap.put("day", dayFormater.format(date));
+			daysMap.put("name",
+					i == 0 ? "Today" : threeLetterWeekFormater.format(date));
+			daysMap.put("weekAndDay", dtWithWeekdayFormater.format(date));
+			daysMap.put("date", date);
+
 			daysNameList.add(daysMap);
-			dayOfWeek++;
-			fstTime = false;
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+
 		}
 
 		return daysNameList;
-	}
-
-	private String getWeekName(int dayOfWeek) {
-		if (dayOfWeek > weekDays.length - 1) {
-			dayOfWeek = Math.abs(dayOfWeek - (weekDays.length));
-			return weekDays[dayOfWeek];
-		} else {
-			return weekDays[dayOfWeek];
-		}
 	}
 
 	public @ResponseBody
@@ -124,20 +126,43 @@ public class BookTicketController {
 
 		List<MovieScreen> movieScreens = movieScreenService.getMovieScreens(
 				movieId, showDate);
+
 		Collections.sort(movieScreens, new Comparator<MovieScreen>() {
 
 			@Override
 			public int compare(MovieScreen o1, MovieScreen o2) {
-				return o1.getShowHours().compareTo(o2.getShowHours());
+				return o1.getShowDate().compareTo(o2.getShowDate());
 			}
 		});
 
 		Map<Screen, MovieScreenStatus> movieScreenStatussMap = new HashMap<Screen, MovieScreenStatus>();
 		MovieScreenStatus movieScreenStatus = null;
 		for (MovieScreen movieScreen : movieScreens) {
+
+			Map<Integer, Float> seatsClasCostMap = new HashMap<Integer, Float>();
+
+			for (SeatClassType seatClassTypes : movieScreen.getScreen()
+					.getSeatClassTypes()) {
+				seatsClasCostMap.put(seatClassTypes.getSeatType().getId(),
+						seatClassTypes.getTicketCost());
+			}
+
+			for (MovieScreenPrice movieScreenPrice : movieScreen
+					.getMovieScreenPrices()) {
+
+				seatsClasCostMap.put(movieScreenPrice.getSeatType().getId(),
+						movieScreenPrice.getTicketCost());
+
+			}
+
 			List<SeatsStatusCount> seatsStatusCounts = seatsStatusService
 					.getSeatsStatusCount(movieScreen.getId(),
 							SeatStatus.AVAILABLE);
+			for (SeatsStatusCount seatsStatusCount : seatsStatusCounts) {
+				seatsStatusCount.setCost(seatsClasCostMap.get(seatsStatusCount
+						.getClassTypeId()));
+			}
+
 			movieScreenStatus = movieScreenStatussMap.get(movieScreen
 					.getScreen());
 			if (movieScreenStatus == null) {
@@ -145,15 +170,9 @@ public class BookTicketController {
 			}
 			movieScreenStatus.setScreen(movieScreen.getScreen());
 			TimeAndStatusInfo timeAndStatusInfo = new TimeAndStatusInfo();
-			if (movieScreen.getShowHours() - 12 < 0) {
-				timeAndStatusInfo.setTime(movieScreen.getShowHours() + ":"
-						+ movieScreen.getShowMins() + " AM");
 
-			} else {
-				timeAndStatusInfo.setTime((movieScreen.getShowHours() - 12)
-						+ ":" + movieScreen.getShowMins() + " PM");
-
-			}
+			timeAndStatusInfo.setTime(timeFormat.format(movieScreen
+					.getShowDate()));
 			timeAndStatusInfo.setSeatsStatusCounts(seatsStatusCounts);
 			timeAndStatusInfo.setMovieScreenId(movieScreen.getId());
 			movieScreenStatussMap.put(movieScreen.getScreen(),
@@ -221,6 +240,7 @@ public class BookTicketController {
 					.getBookingSeats());
 
 			for (SeatsStatus seat : seatsStatus) {
+				seat = seatsStatusService.loadSeatsStatus(seat.getId());
 				BookingTicket bookingTicket = new BookingTicket();
 				bookingTicket.setBookingStatus(BookingStatus.PAYMENT_WAITING);
 				bookingTicket.setTransaction(transaction);

@@ -41,14 +41,7 @@ fieldset {
 		});
 
 		initDialog();
-		$('#hours').spinner({
-			min : 0,
-			max : 23
-		});
-		$('#mins').spinner({
-			min : 0,
-			max : 59
-		});
+
 		var table = $("#movieScreen").DataTable({
 			"dom" : '<"toolbar">frtip',
 			"bProcessing" : true,
@@ -74,16 +67,20 @@ fieldset {
 					}
 				}
 			}, {
-				"mData" : "showHours"
-			}, {
-				"mData" : "showMins"
+				"mData" : "showDate",
+				"mRender" : function(data, type, row) {
+					if (data) {
+
+						return getHours(data) + ":" + getMins(data);
+					}
+				}
 			}, {
 				"mData" : "id"
 			}
 
 			],
 			"columnDefs" : [ {
-				"targets" : [ 6 ],
+				"targets" : [ 5 ],
 				"visible" : false,
 				"searchable" : false
 			} ]
@@ -112,22 +109,29 @@ fieldset {
 
 							$('#locationId')
 									.val(row.screen.theater.location.id);
+							createLocation('locations',
+									row.screen.theater.location.id);
+
 							$('#movieAssignId').val(row.id);
+
 							$('#theaterId').val(row.screen.theater.id);
+							createTheater('theaterName', row.screen.theater.id);
+
 							$('#showDate').val(getDate(row.showDate));
+
 							$('#screenId').val(row.screen.id);
+							createScreen('screenName', row.screen.id);
 
 							$('#locations').val(
 									row.screen.theater.location.name);
 
 							$('#theaterName').val(row.screen.theater.name);
 							$('#screenName').val(row.screen.name);
-							$('#hours').val(row.showHours);
-							$('#mins').val(row.showMins);
+							$('#hours').val(getHours(row.showDate));
+							$('#mins').val(getMins(row.showDate));
 
 							document.movieAssignForm.action = document.movieAssignForm.action
 									+ "/update";
-							createLocation('locations');
 
 						});
 		$('.ui-icon-plus')
@@ -154,83 +158,86 @@ fieldset {
 
 				});
 
-		function createLocation(locationId) {
+		function createLocation(locationId, selLocId) {
+			var locationSelect = $('#' + locationId);
+			$.get($('#contextPath').val() + "/locations/fullList", function(
+					data) {
+				clearOptions(locationId);
+				for (var i = 0; i < data.length; i++) {
+					var option = $("<option>");
 
-			$('#' + locationId).autocomplete({
-				source : $('#contextPath').val() + "/locations/partialList",
-				minLength : 1,
-				focus : function(event, ui) {
-					$('#' + locationId).val(ui.item.name);
-					return false;
-				},
-				select : function(event, ui) {
-					debugger;
-					$('#locationId').val(ui.item.id)
-					createTheater("theaterName");
-					return false;
+					option.attr('value', data[i].id);
+					option.text(data[i].name);
+					locationSelect.append(option);
 				}
 
-			}).data("ui-autocomplete")._renderItem = function(ul, item) {
-				return $("<li>").append("<a>" + item.name + "</a>")
-						.appendTo(ul);
-			};
+				locationSelect.combobox({
+					select : function(event, ui) {
+						$('#locationId').val($(this).val());
+						createTheater('theaterName');
+					}
+				});
+
+				setAutocompletCurrentValue('#' + locationId, selLocId);
+			});
 		}
 
-		function createTheater(theaterId) {
-			$('#' + theaterId).autocomplete(
-					{
-						source : $('#contextPath').val() + "/theater/list/"
-								+ getLocationIdVal(),
-						minLength : 1,
-						focus : function(event, ui) {
-							$("#" + theaterId).val(ui.item.name);
+		function createTheater(theaterId, selTheaterVal) {
+			$.get($('#contextPath').val() + "/theater/fullList/"
+					+ getLocationIdVal(), function(data) {
+				debugger;
+				clearOptions(theaterId);
+				var theaterSelect = $('#' + theaterId);
+				for (var i = 0; i < data.length; i++) {
+					var option = $("<option>");
+					option.attr('value', data[i].id);
+					option.text(data[i].name);
+					theaterSelect.append(option);
+				}
+				theaterSelect.combobox({
+					select : function(event, ui) {
+						$('#theaterId').val($(this).val());
+						createScreen('screenName');
+					}
+				});
+				setAutocompletCurrentValue('#' + theaterId, selTheaterVal);
 
-							return false;
-						},
-						change : function(event, ui) {
+			});
 
-						},
-						select : function(event, ui) {
-							$("#" + theaterId).val(ui.item.name);
-							$('#theaterId').val(ui.item.id)
-							createScreen("screenName");
-
-							return false;
-						}
-					}).data("ui-autocomplete")._renderItem = function(ul, item) {
-
-				return $("<li>").append("<a>" + item.name + "</a>")
-						.appendTo(ul);
-			};
 		}
-		function createScreen(screenId) {
-			$('#' + screenId).autocomplete(
-					{
-						source : $('#contextPath').val() + "/screen/list/"
-								+ getTheaterIdVal(),
-						minLength : 1,
-						focus : function(event, ui) {
-							$("#" + screenId).val(ui.item.name);
+		function createScreen(screenId, selScreenVal) {
+			$
+					.get($('#contextPath').val() + "/screen/list/"
+							+ getTheaterIdVal(),
+							function(data) {
+								var screenSelect = $('#' + screenId);
+								clearOptions(screenId);
+								for (var i = 0; i < data.length; i++) {
+									var option = $("<option>");
+									option.attr('value', data[i].id);
+									option.text(data[i].name);
+									screenSelect.append(option);
+								}
+								screenSelect.combobox({
+									select : function(event, ui) {
+										debugger;
+										$('#screenId').val($(this).val());
 
-							return false;
-						},
-						change : function(event, ui) {
+									}
+								});
+								setAutocompletCurrentValue('#' + screenId,
+										selScreenVal);
+							});
 
-						},
-						select : function(event, ui) {
-							$("#" + screenId).val(ui.item.name);
-							$('#screenId').val(ui.item.id)
-
-							return false;
-						}
-					}).data("ui-autocomplete")._renderItem = function(ul, item) {
-
-				return $("<li>").append("<a>" + item.name + "</a>")
-						.appendTo(ul);
-			};
 		}
 
-		createLocation('locations');
+		function setAutocompletCurrentValue(id, value) {
+			if (id != undefined && value != undefined) {
+				$(id).val(value);
+				var textToShow = $(id).find(":selected").text();
+				$(id).parent().find("span").find("input").val(textToShow);
+			}
+		}
 
 		function getTheaterIdVal() {
 			debugger;
@@ -280,6 +287,7 @@ fieldset {
 		});
 
 		function submitForm() {
+			debugger;
 			$.ajax({
 				type : "post",
 				url : document.movieAssignForm.action,
@@ -321,6 +329,58 @@ fieldset {
 					});
 		}
 
+		function createHoursOption(id) {
+
+			var hoursSelect = $('#' + id);
+			for (var i = 0; i < 24; i++) {
+				var option = $("<option>");
+				option.attr('value', i);
+				if (i < 10) {
+					option.text("0" + i);
+				} else {
+					option.text(i);
+				}
+				hoursSelect.append(option);
+			}
+		}
+		function createMinsOption(id) {
+			var minsSelect = $('#' + id);
+			for (var i = 0; i < 60; i++) {
+				var option = $("<option>");
+				option.attr('value', i);
+				if (i < 10) {
+					option.text("0" + i);
+				} else {
+					option.text(i);
+				}
+				minsSelect.append(option);
+			}
+		}
+		createHoursOption('hours');
+		createMinsOption('mins');
+		// 		$('#hours').selectmenu();
+		// 		$('#mins').selectmenu();
+		createLocation('locations');
+
+		$('#screenName').combobox({
+			select : function(event, ui) {
+				$('#screenId').val($(this).val());
+
+			}
+		});
+
+		$('#theaterName').combobox({
+			select : function(event, ui) {
+				$('#theaterId').val($(this).val());
+				createScreen('screenName');
+			}
+		});
+
+		function clearOptions(selectId) {
+			$('#' + selectId + '').find('option').remove().end().append(
+					'<option value="">Select</option>');
+		}
+
 	});
 
 	function addOptions(data, componentId) {
@@ -342,6 +402,14 @@ fieldset {
 		var curr_year = d.getFullYear();
 		var dateString = (curr_month + 1 + "/" + curr_date + "/" + curr_year);
 		return dateString;
+	}
+	function getHours(data) {
+		var d = new Date(data);
+		return d.getHours();
+	}
+	function getMins(data) {
+		var d = new Date(data)
+		return d.getMinutes();
 	}
 </script>
 
@@ -368,8 +436,7 @@ fieldset {
 					<th>Screen</th>
 					<th>Location</th>
 					<th>Show Date</th>
-					<th>Show Hours</th>
-					<th>Show Minutes</th>
+					<th>Show Time</th>
 					<th>Id</th>
 				</tr>
 			</thead>
@@ -390,23 +457,26 @@ fieldset {
 			<fieldset>
 				<form:hidden path="movieId" id="movieId" value="-1" />
 				<form:hidden path="movieAssignId" id="movieAssignId" />
-				<form:hidden path="screenId" id="screenId" />
-
 
 				<div>
 					<div class="labelCell">
 						<label>Location</label>
 					</div>
+
 					<div class="valueCell">
-						<input type="text" id="locations" />
+						<select id="locations">
+							<option value=""></option>
+						</select>
 					</div>
 				</div>
+
+
 				<div>
 					<div class="labelCell">
 						<label for="theaterName">Theater</label>
 					</div>
 					<div class="valueCell">
-						<input type="text" id="theaterName" />
+						<select id="theaterName"><option value=""></option></select>
 					</div>
 				</div>
 				<div>
@@ -414,7 +484,9 @@ fieldset {
 						<label for="screenName">Screen</label>
 					</div>
 					<div class="valueCell">
-						<input type="text" id="screenName" />
+						<select id="screenName"><option value=""></option>
+						</select>
+						<form:hidden path="screenId" id="screenId"></form:hidden>
 					</div>
 				</div>
 
@@ -431,19 +503,18 @@ fieldset {
 
 				<div>
 					<div class="labelCell">
-						<form:label path="hours">Hours</form:label>
+						<form:label path="hours">Show Time</form:label>
 					</div>
 					<div class="valueCell">
-						<form:input path="hours" id="hours" />
-					</div>
-				</div>
-
-				<div>
-					<div class="labelCell">
-						<form:label path="mins">Minutes</form:label>
-					</div>
-					<div class="valueCell">
-						<form:input path="mins" id="mins" />
+						<form:select path="hours" id="hours">
+							<form:option value="">
+								Hours
+							</form:option>
+						</form:select>
+						:
+						<form:select path="mins" id="mins">
+							<form:option value="">Minutes</form:option>
+						</form:select>
 					</div>
 				</div>
 			</fieldset>

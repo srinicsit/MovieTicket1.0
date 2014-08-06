@@ -1,5 +1,7 @@
 package com.avihs.movie.business.seat_class_type.service;
 
+import java.util.List;
+
 import com.avihs.movie.business.seat_class_type.model.SeatClassType;
 
 public interface SeatClassTypeService {
@@ -13,4 +15,6 @@ public interface SeatClassTypeService {
 	public void delete(SeatClassType seatClassType);
 
 	public SeatClassType load(Integer seatClassTypeId);
+	
+	public List<SeatClassType> getClassTypesForScreen(Integer screenId);
 }

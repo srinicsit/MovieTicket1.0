@@ -40,8 +40,6 @@ public class PaymentController {
 	private SimpleDateFormat dtWithWeekday = new SimpleDateFormat(
 			"EEE, MMM d, yyyy");
 
-	private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-
 	@Autowired
 	private BookingTicketService bookingTicketService;
 
@@ -99,7 +97,7 @@ public class PaymentController {
 
 		ticketSummary.setSeatNumbers(seats);
 		ticketSummary.setSeatClass(bookingTicket.getSeatStatus().getSeat()
-				.getRow().getSeatClassType().getSeatClsName());
+				.getRow().getSeatClassType().getSeatType().getName());
 		String bookingId = bookingTicket.getTransaction().getId() + "";
 		ticketSummary.setBookingId(bookingId);
 
@@ -114,9 +112,10 @@ public class PaymentController {
 				.getMovieScreen().getMovie().getMovieName());
 		ticketSummary.setPaymentMode("Credit Card");
 		ticketSummary.setScreenName(bookingTicket.getSeatStatus()
-				.getMovieScreen().getScreen().getName());		
-		ticketSummary.setShowDate(dtWithWeekday.format(bookingTicket.getSeatStatus().getMovieScreen().getShowDate()));
-		
+				.getMovieScreen().getScreen().getName());
+		ticketSummary.setShowDate(dtWithWeekday.format(bookingTicket
+				.getSeatStatus().getMovieScreen().getShowDate()));
+
 		SimpleDateFormat tf = new SimpleDateFormat("hh:mm a");
 		ticketSummary.setShowStartTime(tf.format(new Date()));
 		ticketSummary.setTheaterName("Gopalan Mall");
